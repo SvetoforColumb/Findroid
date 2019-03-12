@@ -93,6 +93,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        getSupportActionBar().hide();
     }
 
     private void populateAutoComplete() {
@@ -280,13 +282,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
-    public void SignIn(View view) {
-        Intent intentObj = new Intent(this, MainActivity.class);
-        EditText editText = findViewById(R.id.password);
-        TextView textView = findViewById(R.id.email);
-        startActivity(intentObj);
-    }
-
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -341,6 +336,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+                Intent intentObj = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intentObj);
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

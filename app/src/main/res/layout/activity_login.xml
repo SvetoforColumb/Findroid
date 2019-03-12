@@ -33,7 +33,7 @@
             android:orientation="vertical">
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="230dp"
                 android:textSize="45sp"
                 android:textColor="@color/text"
                 android:gravity="center"
@@ -48,7 +48,7 @@
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="#ffffff"
+                    android:textColorHint="@color/white"
                     android:textColor="@color/text"
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
@@ -67,6 +67,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"
                     android:textColor="@color/text"
+                    android:textColorHint="@color/white"
                     android:imeActionId="6"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
@@ -81,20 +82,14 @@
                 style="?android:textAppearanceSmall"
 
                 android:layout_width="150dp"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="40dp"
                 android:background="#FF2F2F"
                 android:text="@string/action_sign_in_short"
-                android:onClick="SignIn"
                 android:textColor="@color/text"
                 android:textSize="20sp" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/android"/>
 
         </LinearLayout>
     </ScrollView>
