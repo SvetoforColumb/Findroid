@@ -57,6 +57,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private UserLoginTask mAuthTask = null;
 
+
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -195,7 +196,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return (email.contains("@")&&(email.contains(".ru")||email.contains(".com")));
     }
 
     private boolean isPasswordValid(String password) {
@@ -282,6 +283,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    public void SignUp(View view) {
+
+    }
+
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -329,7 +334,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // TODO: register the new account here.
             return true;
         }
-
+        public static final String EXTRA_MASSAGE="em";
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
@@ -337,6 +342,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             if (success) {
                 Intent intentObj = new Intent(LoginActivity.this, MainActivity.class);
+                TextView emailTV = findViewById(R.id.email);
+                String email = emailTV.getText().toString();
+                intentObj.putExtra(EXTRA_MASSAGE, email);
                 startActivity(intentObj);
                 finish();
             } else {
