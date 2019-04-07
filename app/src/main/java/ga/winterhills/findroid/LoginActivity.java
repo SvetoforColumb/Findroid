@@ -3,23 +3,22 @@ package ga.winterhills.findroid;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +28,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,7 +205,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() >= 6;
     }
 
     /**
@@ -284,7 +288,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     public void SignUp(View view) {
-
+        Intent intentObj = new Intent(LoginActivity.this, registraitActivity.class);
+        startActivity(intentObj);
     }
 
 
@@ -298,6 +303,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
+    JSONParser jsonParser = new JSONParser();
+
+    private static final String TAG_SUCCESS = "success";
+    JSONObject json = null;
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -306,21 +315,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private boolean emailTrue=false;
+        private boolean passwordTrue=false;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
         }
 
+        private static final String url_checkUser="https://findroid.napoleonthecake.ru/check_user.php";
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
+                    Log.i("TAG", "Connection start");
+                    List<NameValuePair> values = new ArrayList<NameValuePair>();
+                    values.add(new BasicNameValuePair("login", mEmail));
+                    json = jsonParser.makeHttpRequest(url_checkUser, "GET", values);
+                    Thread.sleep(100);
+                    int success;
+                    success = json.getInt(TAG_SUCCESS);
+                    if (success == 1) {
+                        emailTrue = true;
+                        String pass = getPassword(json.getString("user"));
+                        passwordTrue = pass.equals(mPassword);
+                    }
             } catch (InterruptedException e) {
                 return false;
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
             for (String credential : DUMMY_CREDENTIALS) {
@@ -334,23 +356,45 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // TODO: register the new account here.
             return true;
         }
+
         public static final String EXTRA_MASSAGE="em";
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
 
-            if (success) {
+            if (success&&passwordTrue) {
                 Intent intentObj = new Intent(LoginActivity.this, MainActivity.class);
                 TextView emailTV = findViewById(R.id.email);
                 String email = emailTV.getText().toString();
                 intentObj.putExtra(EXTRA_MASSAGE, email);
-                startActivity(intentObj);
                 finish();
+                startActivity(intentObj);
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                if(!passwordTrue) {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
+                if(!emailTrue) {
+                    mEmailView.setError(getString(R.string.incorrect_user));
+                    mEmailView.requestFocus();
+                }
             }
+        }
+
+        protected String getPassword(String user){
+            int symbol=0;
+            int commaCount=0;
+            StringBuilder password= new StringBuilder();
+            while(commaCount<2){
+                if(user.charAt(symbol++)==',') commaCount++;
+            }
+            while(user.charAt(symbol)!=':')
+                symbol++;
+            symbol+=2;
+            while(user.charAt(symbol)!='"')
+                password.append(user.charAt(symbol++));
+            return password.toString();
         }
 
         @Override

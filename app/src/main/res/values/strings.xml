@@ -15,4 +15,5 @@
     </string>
     <string name="findroid">FINDROID</string>
     <string name="sign_up"><u>Sign Up</u></string>
+    <string name="incorrect_user">User was\'t found</string>
 </resources>
