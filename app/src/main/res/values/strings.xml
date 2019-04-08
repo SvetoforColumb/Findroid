@@ -16,4 +16,16 @@
     <string name="findroid">FINDROID</string>
     <string name="sign_up"><u>Sign Up</u></string>
     <string name="incorrect_user">User was\'t found</string>
+    <!-- Sities-->
+    <string name="city_Moscow">Go Moscow</string>
+    <string name="city_Penza">Go Penza</string>
+    <string name="city_Sochi">Go Sochi</string>
+    <string name="city_Volgograd">Go Volgograd</string>
+    <string name="city_Kazan">Go Kazan</string>
+    <string name="city_Chelyabinsk">Go Chelyabinsk</string>
+
+    <!-- Voice captions -->
+    <string name="kws_caption">To start say \"Robot start\".</string>
+    <string name="menu_caption">Say \"go\" to give robot the distanation</string>
+
 </resources>

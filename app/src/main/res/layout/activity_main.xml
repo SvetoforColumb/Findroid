@@ -29,26 +29,25 @@
         android:layout_width="match_parent"
         android:layout_height="79dp">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/robot_comand"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="robot camand" />
+            android:layout_height="match_parent" />
     </android.support.design.widget.TextInputLayout>
 
-    <ImageButton
-        android:id="@+id/micro_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/background"
-        android:src="@drawable/micro"
-        android:layout_gravity="center_horizontal"/>
-
     <TextView
-        android:id="@+id/Aval_langs"
+        android:id="@+id/caption_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Avaluble languages" />
+        android:text="Voice control"
+        android:textAlignment="center"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/result_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="30sp" />
 
 
 </LinearLayout>
