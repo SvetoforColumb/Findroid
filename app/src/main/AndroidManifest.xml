@@ -6,11 +6,10 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
-<<<<<<< HEAD
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-=======
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
->>>>>>> 7edb6b67a3eba7b5c6a2d0e1cf04212b62dedf0a
 
     <application
         android:allowBackup="true"
