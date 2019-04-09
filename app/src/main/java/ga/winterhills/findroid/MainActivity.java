@@ -2,7 +2,9 @@ package ga.winterhills.findroid;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.speech.RecognizerIntent;
@@ -32,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements
     TextView email_text;
     TextView lang_list;
 
+    public static final String APP_PREFERENCES = "settings";
+    public static final String APP_PREFERENCES_LOGIN = "Login";// = "False";
+
     /* Named searches allow to quickly reconfigure the decoder */
 
     private static final String MENU_SEARCH = "go";
@@ -46,12 +51,25 @@ public class MainActivity extends AppCompatActivity implements
 
     private SpeechRecognizer recognizer;
     private HashMap<String, Integer> captions;
-
+    SharedPreferences mSettings;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        boolean hasVisited = mSettings.getBoolean("hasVisited", false);
+        if (!hasVisited) {
+            SharedPreferences.Editor e = mSettings.edit();
+            e.putBoolean(APP_PREFERENCES_LOGIN, false);
+            e.putBoolean("hasVisited", true);
+            e.apply();
+            Intent intentObj = new Intent(MainActivity.this, LoginActivity.class);
+            finish();
+            startActivity(intentObj);
+        }
+
+
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
         Intent intentObj = getIntent();

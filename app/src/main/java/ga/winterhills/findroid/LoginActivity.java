@@ -4,9 +4,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -38,6 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static ga.winterhills.findroid.MainActivity.APP_PREFERENCES;
+import static ga.winterhills.findroid.MainActivity.APP_PREFERENCES_LOGIN;
 
 /**
  * A login screen that offers login via email/password.
@@ -364,6 +368,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success&&passwordTrue) {
+                SharedPreferences mSettings;
+                mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+                SharedPreferences.Editor e = mSettings.edit();
+                e.putBoolean(APP_PREFERENCES_LOGIN, false);
+                e.apply();
                 Intent intentObj = new Intent(LoginActivity.this, MainActivity.class);
                 TextView emailTV = findViewById(R.id.email);
                 String email = emailTV.getText().toString();
