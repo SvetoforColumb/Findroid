@@ -27,6 +27,12 @@ import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import org.apache.http.NameValuePair;
+import java.util.List;
+import java.util.ArrayList;
 import static android.widget.Toast.makeText;
 
 public class MainActivity extends AppCompatActivity implements
@@ -44,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String CITY_MOSCOW = "moscow";
 
     /* Keyword we are looking for to activate menu */
-    private static final String KEYPHRASE = "robot start";
+    private static final String KEYPHRASE = "start";
 
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
@@ -68,7 +74,8 @@ public class MainActivity extends AppCompatActivity implements
             finish();
             startActivity(intentObj);
         }
-
+        Map map = new Map();
+        map.execute((Void) null);
 
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
@@ -259,5 +266,86 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onTimeout() {
         // todo: what to do in timeout
+    }
+
+    JSONParser jsonParser = new JSONParser();
+    JSONObject json=null;
+    String url_getCoorCity="https://findroid.napoleonthecake.ru/getCoorCity.php";
+    String url_getWays="https://findroid.napoleonthecake.ru/getWays.php";
+
+    public class Map extends AsyncTask<Void, Void, Boolean> {
+        String[] nameOfCities={"Moscow", "Penza", "Chelyabinsk", "Tomsk", "Sochi", "Azov", "Amursk", "Volgograd", "Kazan", "Ufa"};
+        City[] country;
+        List<Way> roads;
+
+        class City {
+            String name;
+            int id;
+            int x;
+            int y;
+
+            City() {}
+            City(String name1, int x1, int y1, int id1) {
+                name = name1;
+                x = x1;
+                y = y1;
+                id = id1;
+            }
+        }
+
+        class Way{
+            int idFrom;
+            int idTo;
+            int value;
+
+            Way(int from, int to, int val)
+            {
+                idFrom =from;
+                idTo=to;
+                value=val;
+            }
+        }
+
+        Map(){
+            country=new City[10];
+            roads=new ArrayList<Way>();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... args){
+            List<NameValuePair> values = new ArrayList<NameValuePair>();
+            json = jsonParser.makeHttpRequest(url_getCoorCity, "GET", values);
+            for(int i=0; i<nameOfCities.length; i++){
+                try {
+                    country[i]=getParamCity(json.getString(nameOfCities[i]), nameOfCities[i]);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            json = jsonParser.makeHttpRequest(url_getWays, "GET", values);
+            int count=0;
+            try {
+                while(json.getString("way #"+count)!=null) {
+                    roads.add(getWay(json.getString("way #"+count)));
+                    count++;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+
+        City getParamCity(String params, String name) throws JSONException {
+            JSONObject jObj = new JSONObject(params);
+            City city=new City(name, jObj.getInt("coor_x"), jObj.getInt("coor_y"), jObj.getInt("id"));
+            return city;
+        }
+
+        Way getWay(String params) throws JSONException {
+            JSONObject jObj = new JSONObject(params);
+            Way way=new Way(jObj.getInt("cityFrom"), jObj.getInt("cityTo"), jObj.getInt("value"));
+            return way;
+        }
     }
 }
