@@ -25,7 +25,7 @@
     <string name="city_Chelyabinsk">Go Chelyabinsk</string>
 
     <!-- Voice captions -->
-    <string name="kws_caption">To start say \"Robot start\".</string>
+    <string name="kws_caption">To start say \"Start\".</string>
     <string name="menu_caption">Say \"go\" to give robot the distanation</string>
 
 </resources>

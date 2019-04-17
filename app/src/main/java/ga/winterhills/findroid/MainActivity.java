@@ -43,11 +43,10 @@ public class MainActivity extends AppCompatActivity implements
     public static final String APP_PREFERENCES = "settings";
     public static final String APP_PREFERENCES_LOGIN = "Login";// = "False";
 
-    /* Named searches allow to quickly reconfigure the decoder */
-
-    private static final String MENU_SEARCH = "go";
+    /* Named searches allow to quickly reconfigure the decoder  */
     private static final String KWS_SEARCH = "wakeup";
-    private static final String CITY_MOSCOW = "moscow";
+    private static final String GO_SEARCH = "go";
+    private static final String CITY_SEARCH = "city";
 
     /* Keyword we are looking for to activate menu */
     private static final String KEYPHRASE = "start";
@@ -63,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         boolean hasVisited = mSettings.getBoolean("hasVisited", false);
         if (!hasVisited) {
@@ -87,8 +87,7 @@ public class MainActivity extends AppCompatActivity implements
         // Prepare the data for UI
         captions = new HashMap<>();
         captions.put(KWS_SEARCH, R.string.kws_caption);
-        captions.put(MENU_SEARCH, R.string.menu_caption);
-        captions.put(CITY_MOSCOW, R.string.city_Moscow);
+        captions.put(GO_SEARCH, R.string.menu_caption);
 
         ((TextView) findViewById(R.id.caption_text))
                 .setText("Preparing the recognizer");
@@ -171,11 +170,7 @@ public class MainActivity extends AppCompatActivity implements
 
         String text = hypothesis.getHypstr();
         if (text.equals(KEYPHRASE))
-            switchSearch(MENU_SEARCH);
-        else if (text.equals(MENU_SEARCH))
-            switchSearch(MENU_SEARCH);
-        else if (text.equals(CITY_MOSCOW))
-            switchSearch(CITY_MOSCOW);
+            switchSearch(GO_SEARCH);
 //        else if (text.equals(FORECAST_SEARCH))
 //            switchSearch(FORECAST_SEARCH);
         else
@@ -240,9 +235,10 @@ public class MainActivity extends AppCompatActivity implements
         // Create keyword-activation search.
         recognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
 
+        recognizer.addKeyphraseSearch(GO_SEARCH, GO_SEARCH);
         // Create grammar-based search for selection between demos
         File menuGrammar = new File(assetsDir, "menu.gram");
-        recognizer.addGrammarSearch(MENU_SEARCH, menuGrammar);
+        recognizer.addGrammarSearch(CITY_SEARCH, menuGrammar);
 
 //        // Create grammar-based search for digit recognition
 //        File digitsGrammar = new File(assetsDir, "digits.gram");
@@ -314,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         protected Boolean doInBackground(Void... args){
             List<NameValuePair> values = new ArrayList<NameValuePair>();
-            json = jsonParser.makeHttpRequest(url_getCoorCity, "GET", values);
+            json = JSONParser.makeHttpRequest(url_getCoorCity, "GET", values);
             for(int i=0; i<nameOfCities.length; i++){
                 try {
                     country[i]=getParamCity(json.getString(nameOfCities[i]), nameOfCities[i]);
@@ -323,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
 
-            json = jsonParser.makeHttpRequest(url_getWays, "GET", values);
+            json = JSONParser.makeHttpRequest(url_getWays, "GET", values);
             int count=0;
             try {
                 while(json.getString("way #"+count)!=null) {
@@ -338,14 +334,12 @@ public class MainActivity extends AppCompatActivity implements
 
         City getParamCity(String params, String name) throws JSONException {
             JSONObject jObj = new JSONObject(params);
-            City city=new City(name, jObj.getInt("coor_x"), jObj.getInt("coor_y"), jObj.getInt("id"));
-            return city;
+            return new City(name, jObj.getInt("coor_x"), jObj.getInt("coor_y"), jObj.getInt("id"));
         }
 
         Way getWay(String params) throws JSONException {
             JSONObject jObj = new JSONObject(params);
-            Way way=new Way(jObj.getInt("cityFrom"), jObj.getInt("cityTo"), jObj.getInt("value"));
-            return way;
+            return new Way(jObj.getInt("cityFrom"), jObj.getInt("cityTo"), jObj.getInt("value"));
         }
     }
 }
