@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,10 +44,11 @@ public class MainActivity extends AppCompatActivity implements
     public static final String APP_PREFERENCES = "settings";
     public static final String APP_PREFERENCES_LOGIN = "Login";// = "False";
 
-    /* Named searches allow to quickly reconfigure the decoder  */
+    /* Named searches allow to quickly reconfigure the decoder */
+
+    private static final String MENU_SEARCH = "go";
     private static final String KWS_SEARCH = "wakeup";
-    private static final String GO_SEARCH = "go";
-    private static final String CITY_SEARCH = "city";
+    private static final String CITY_MOSCOW = "moscow";
 
     /* Keyword we are looking for to activate menu */
     private static final String KEYPHRASE = "start";
@@ -62,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         boolean hasVisited = mSettings.getBoolean("hasVisited", false);
         if (!hasVisited) {
@@ -87,7 +88,8 @@ public class MainActivity extends AppCompatActivity implements
         // Prepare the data for UI
         captions = new HashMap<>();
         captions.put(KWS_SEARCH, R.string.kws_caption);
-        captions.put(GO_SEARCH, R.string.menu_caption);
+        captions.put(MENU_SEARCH, R.string.menu_caption);
+        captions.put(CITY_MOSCOW, R.string.city_Moscow);
 
         ((TextView) findViewById(R.id.caption_text))
                 .setText("Preparing the recognizer");
@@ -170,7 +172,11 @@ public class MainActivity extends AppCompatActivity implements
 
         String text = hypothesis.getHypstr();
         if (text.equals(KEYPHRASE))
-            switchSearch(GO_SEARCH);
+            switchSearch(MENU_SEARCH);
+        else if (text.equals(MENU_SEARCH))
+            switchSearch(MENU_SEARCH);
+        else if (text.equals(CITY_MOSCOW))
+            switchSearch(CITY_MOSCOW);
 //        else if (text.equals(FORECAST_SEARCH))
 //            switchSearch(FORECAST_SEARCH);
         else
@@ -235,10 +241,9 @@ public class MainActivity extends AppCompatActivity implements
         // Create keyword-activation search.
         recognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
 
-        recognizer.addKeyphraseSearch(GO_SEARCH, GO_SEARCH);
         // Create grammar-based search for selection between demos
         File menuGrammar = new File(assetsDir, "menu.gram");
-        recognizer.addGrammarSearch(CITY_SEARCH, menuGrammar);
+        recognizer.addGrammarSearch(MENU_SEARCH, menuGrammar);
 
 //        // Create grammar-based search for digit recognition
 //        File digitsGrammar = new File(assetsDir, "digits.gram");
@@ -272,13 +277,13 @@ public class MainActivity extends AppCompatActivity implements
     public class Map extends AsyncTask<Void, Void, Boolean> {
         String[] nameOfCities={"Moscow", "Penza", "Chelyabinsk", "Tomsk", "Sochi", "Azov", "Amursk", "Volgograd", "Kazan", "Ufa"};
         City[] country;
-        List<Way> roads;
 
         class City {
             String name;
             int id;
             int x;
             int y;
+            ArrayList<Way> roads;
 
             City() {}
             City(String name1, int x1, int y1, int id1) {
@@ -286,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements
                 x = x1;
                 y = y1;
                 id = id1;
+                roads=new ArrayList<>();
             }
         }
 
@@ -296,20 +302,19 @@ public class MainActivity extends AppCompatActivity implements
 
             Way(int from, int to, int val)
             {
-                idFrom =from;
-                idTo=to;
+                idFrom =from-1;
+                idTo=to-1;
                 value=val;
             }
         }
 
         Map(){
             country=new City[10];
-            roads=new ArrayList<Way>();
         }
 
         @Override
         protected Boolean doInBackground(Void... args){
-            List<NameValuePair> values = new ArrayList<NameValuePair>();
+            List<NameValuePair> values = new ArrayList<>();
             json = JSONParser.makeHttpRequest(url_getCoorCity, "GET", values);
             for(int i=0; i<nameOfCities.length; i++){
                 try {
@@ -323,7 +328,8 @@ public class MainActivity extends AppCompatActivity implements
             int count=0;
             try {
                 while(json.getString("way #"+count)!=null) {
-                    roads.add(getWay(json.getString("way #"+count)));
+                    Way way=getWay(json.getString("way #"+count));
+                    country[way.idFrom].roads.add(way);
                     count++;
                 }
             } catch (JSONException e) {
@@ -334,12 +340,14 @@ public class MainActivity extends AppCompatActivity implements
 
         City getParamCity(String params, String name) throws JSONException {
             JSONObject jObj = new JSONObject(params);
-            return new City(name, jObj.getInt("coor_x"), jObj.getInt("coor_y"), jObj.getInt("id"));
+            City city=new City(name, jObj.getInt("coor_x"), jObj.getInt("coor_y"), jObj.getInt("id"));
+            return city;
         }
 
         Way getWay(String params) throws JSONException {
             JSONObject jObj = new JSONObject(params);
-            return new Way(jObj.getInt("cityFrom"), jObj.getInt("cityTo"), jObj.getInt("value"));
+            Way way=new Way(jObj.getInt("cityFrom"), jObj.getInt("cityTo"), jObj.getInt("value"));
+            return way;
         }
     }
 }
