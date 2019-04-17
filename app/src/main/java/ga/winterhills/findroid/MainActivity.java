@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -276,13 +277,13 @@ public class MainActivity extends AppCompatActivity implements
     public class Map extends AsyncTask<Void, Void, Boolean> {
         String[] nameOfCities={"Moscow", "Penza", "Chelyabinsk", "Tomsk", "Sochi", "Azov", "Amursk", "Volgograd", "Kazan", "Ufa"};
         City[] country;
-        List<Way> roads;
 
         class City {
             String name;
             int id;
             int x;
             int y;
+            ArrayList<Way> roads;
 
             City() {}
             City(String name1, int x1, int y1, int id1) {
@@ -290,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements
                 x = x1;
                 y = y1;
                 id = id1;
+                roads=new ArrayList<>();
             }
         }
 
@@ -300,21 +302,20 @@ public class MainActivity extends AppCompatActivity implements
 
             Way(int from, int to, int val)
             {
-                idFrom =from;
-                idTo=to;
+                idFrom =from-1;
+                idTo=to-1;
                 value=val;
             }
         }
 
         Map(){
             country=new City[10];
-            roads=new ArrayList<Way>();
         }
 
         @Override
         protected Boolean doInBackground(Void... args){
-            List<NameValuePair> values = new ArrayList<NameValuePair>();
-            json = jsonParser.makeHttpRequest(url_getCoorCity, "GET", values);
+            List<NameValuePair> values = new ArrayList<>();
+            json = JSONParser.makeHttpRequest(url_getCoorCity, "GET", values);
             for(int i=0; i<nameOfCities.length; i++){
                 try {
                     country[i]=getParamCity(json.getString(nameOfCities[i]), nameOfCities[i]);
@@ -323,11 +324,12 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
 
-            json = jsonParser.makeHttpRequest(url_getWays, "GET", values);
+            json = JSONParser.makeHttpRequest(url_getWays, "GET", values);
             int count=0;
             try {
                 while(json.getString("way #"+count)!=null) {
-                    roads.add(getWay(json.getString("way #"+count)));
+                    Way way=getWay(json.getString("way #"+count));
+                    country[way.idFrom].roads.add(way);
                     count++;
                 }
             } catch (JSONException e) {
