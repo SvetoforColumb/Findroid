@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements
     String url_getWays="https://findroid.napoleonthecake.ru/getWays.php";
 
     public class Map extends AsyncTask<Void, Void, Boolean> {
-        String[] nameOfCities={"Moscow", "Penza", "Chelyabinsk", "Tomsk", "Sochi", "Azov", "Amursk", "Volgograd", "Kazan", "Ufa"};
+        String[] nameOfCities={"Moscow", "Penza", "Chelyabinsk", "Kazan", "Sochi", "London", "Berlin", "Volgograd"};
         City[] country;
 
         class City {
