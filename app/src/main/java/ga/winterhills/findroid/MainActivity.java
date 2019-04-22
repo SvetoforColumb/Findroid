@@ -6,6 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
@@ -14,6 +21,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -340,14 +348,20 @@ public class MainActivity extends AppCompatActivity implements
 
         City getParamCity(String params, String name) throws JSONException {
             JSONObject jObj = new JSONObject(params);
-            City city=new City(name, jObj.getInt("coor_x"), jObj.getInt("coor_y"), jObj.getInt("id"));
-            return city;
+            return new City(name, jObj.getInt("coor_x"), jObj.getInt("coor_y"), jObj.getInt("id"));
         }
 
         Way getWay(String params) throws JSONException {
             JSONObject jObj = new JSONObject(params);
-            Way way=new Way(jObj.getInt("cityFrom"), jObj.getInt("cityTo"), jObj.getInt("value"));
-            return way;
+            return new Way(jObj.getInt("cityFrom"), jObj.getInt("cityTo"), jObj.getInt("value"));
         }
     }
-}
+
+    public void onMyButtonClick(View view)
+    {
+        Intent intentObj = new Intent(MainActivity.this, MapActivity.class);
+        finish();
+        startActivity(intentObj);
+    }
+
+    }
