@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         Map(){
-            country=new City[10];
+            country=new City[8];
         }
 
         @Override
@@ -329,7 +329,9 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 while(json.getString("way #"+count)!=null) {
                     Way way=getWay(json.getString("way #"+count));
-                    country[way.idFrom].roads.add(way);
+                    if(way.idFrom<country.length)
+                        country[way.idFrom].roads.add(way);
+                    else break;
                     count++;
                 }
             } catch (JSONException e) {
