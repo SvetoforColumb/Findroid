@@ -1,26 +1,16 @@
 package ga.winterhills.findroid;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.AsyncTask;
-import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +32,8 @@ import org.json.JSONObject;
 import org.apache.http.NameValuePair;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Objects;
+
 import static android.widget.Toast.makeText;
 
 public class MainActivity extends AppCompatActivity implements
@@ -83,11 +75,10 @@ public class MainActivity extends AppCompatActivity implements
             finish();
             startActivity(intentObj);
         }
-        Map map = new Map();
-        map.execute((Void) null);
+
 
         setContentView(R.layout.activity_main);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
         Intent intentObj = getIntent();
         String email=intentObj.getStringExtra(LoginActivity.UserLoginTask.EXTRA_MASSAGE);
         email_text = findViewById(R.id.email);
@@ -274,96 +265,18 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onTimeout() {
-        // todo: what to do in timeout
+        switchSearch(KWS_SEARCH);
     }
 
-    JSONParser jsonParser = new JSONParser();
-    JSONObject json=null;
-    String url_getCoorCity="https://findroid.napoleonthecake.ru/getCoorCity.php";
-    String url_getWays="https://findroid.napoleonthecake.ru/getWays.php";
+    //map drawing
 
-    public class Map extends AsyncTask<Void, Void, Boolean> {
-        String[] nameOfCities={"Moscow", "Penza", "Chelyabinsk", "Kazan", "Sochi", "London", "Berlin", "Volgograd"};
-        City[] country;
 
-        class City {
-            String name;
-            int id;
-            int x;
-            int y;
-            ArrayList<Way> roads;
-
-            City() {}
-            City(String name1, int x1, int y1, int id1) {
-                name = name1;
-                x = x1;
-                y = y1;
-                id = id1;
-                roads=new ArrayList<>();
-            }
-        }
-
-        class Way{
-            int idFrom;
-            int idTo;
-            int value;
-
-            Way(int from, int to, int val)
-            {
-                idFrom =from-1;
-                idTo=to-1;
-                value=val;
-            }
-        }
-
-        Map(){
-            country=new City[8];
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... args){
-            List<NameValuePair> values = new ArrayList<>();
-            json = JSONParser.makeHttpRequest(url_getCoorCity, "GET", values);
-            for(int i=0; i<nameOfCities.length; i++){
-                try {
-                    country[i]=getParamCity(json.getString(nameOfCities[i]), nameOfCities[i]);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            json = JSONParser.makeHttpRequest(url_getWays, "GET", values);
-            int count=0;
-            try {
-                while(json.getString("way #"+count)!=null) {
-                    Way way=getWay(json.getString("way #"+count));
-                    if(way.idFrom<country.length)
-                        country[way.idFrom].roads.add(way);
-                    else break;
-                    count++;
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return true;
-        }
-
-        City getParamCity(String params, String name) throws JSONException {
-            JSONObject jObj = new JSONObject(params);
-            return new City(name, jObj.getInt("coor_x"), jObj.getInt("coor_y"), jObj.getInt("id"));
-        }
-
-        Way getWay(String params) throws JSONException {
-            JSONObject jObj = new JSONObject(params);
-            return new Way(jObj.getInt("cityFrom"), jObj.getInt("cityTo"), jObj.getInt("value"));
-        }
-    }
 
     public void onMyButtonClick(View view)
     {
         Intent intentObj = new Intent(MainActivity.this, MapActivity.class);
-        finish();
         startActivity(intentObj);
     }
 
-    }
+
+}

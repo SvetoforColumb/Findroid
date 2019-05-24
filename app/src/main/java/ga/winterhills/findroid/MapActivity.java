@@ -8,7 +8,7 @@ public class MapActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Draw2D draw2D = new Draw2D(this);
+        DrawMap draw2D = new DrawMap(this);
         setContentView(draw2D);
     }
 
