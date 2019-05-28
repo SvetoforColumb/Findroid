@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -12,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,12 +29,6 @@ import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import org.apache.http.NameValuePair;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Objects;
 
 import static android.widget.Toast.makeText;
@@ -40,6 +37,10 @@ public class MainActivity extends AppCompatActivity implements
         RecognitionListener {
     TextView email_text;
     TextView lang_list;
+
+    DrawMap drawMap;
+    View map_canvas;
+    LinearLayout mainLayout;
 
     public static final String APP_PREFERENCES = "settings";
     public static final String APP_PREFERENCES_LOGIN = "Login";// = "False";
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        boolean hasVisited = mSettings.getBoolean("hasVisited", false);
+        boolean hasVisited = mSettings.getBoolean("hasVisited", true); // todo: change "true" with "false", when db are ready
         if (!hasVisited) {
             SharedPreferences.Editor e = mSettings.edit();
             e.putBoolean(APP_PREFERENCES_LOGIN, false);
@@ -77,12 +78,15 @@ public class MainActivity extends AppCompatActivity implements
         }
 
 
+
         setContentView(R.layout.activity_main);
         Objects.requireNonNull(getSupportActionBar()).hide();
         Intent intentObj = getIntent();
         String email=intentObj.getStringExtra(LoginActivity.UserLoginTask.EXTRA_MASSAGE);
         email_text = findViewById(R.id.email);
         email_text.setText(email);
+
+
 
         // Prepare the data for UI
         captions = new HashMap<>();

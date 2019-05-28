@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/background"
+    android:id="@+id/main_layout"
     tools:context=".MainActivity">
     <TextView
         android:id="@+id/email"
@@ -18,15 +19,6 @@
         android:textStyle="italic"
         android:textColor="@color/text"/>
 
-    <ImageView
-        android:id="@+id/map"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="10dp"
-        android:clickable="true"
-        android:onClick="onMyButtonClick"
-        android:src="@drawable/map" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
