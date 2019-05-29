@@ -86,7 +86,8 @@ public class MainActivity extends AppCompatActivity implements
         email_text = findViewById(R.id.email);
         email_text.setText(email);
 
-
+        mainLayout = findViewById(R.id.main_layout);
+        mainLayout.addView(new DrawMap(this));
 
         // Prepare the data for UI
         captions = new HashMap<>();

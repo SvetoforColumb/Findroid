@@ -44,6 +44,16 @@ public class DrawMap extends View {
         mPaint.setColor(Color.WHITE);
         canvas.drawPaint(mPaint);
         mPaint.setAntiAlias(true);
+        mPaint.setColor(Color.RED);
+        mPaint.setStrokeWidth(5);
+        canvas.drawLine(300,400,800,900, mPaint);
+        mPaint.setColor(Color.GREEN);
+        canvas.drawCircle(300,400,50,mPaint);
+        canvas.drawCircle(800,900,50,mPaint);
+        mPaint.setColor(Color.BLACK);
+        mPaint.setTextSize(30);
+        canvas.drawText("Moscow", 400,400,mPaint);
+        canvas.drawText("Chelyabinsk", 900,900,mPaint);
         canvas.save();
         canvas.restore();
 //        mapData = new MapData();
