@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
         setContentView(R.layout.activity_main);
-        Objects.requireNonNull(getSupportActionBar()).hide();
+        //Objects.requireNonNull(getSupportActionBar()).hide();
         Intent intentObj = getIntent();
         String email=intentObj.getStringExtra(LoginActivity.UserLoginTask.EXTRA_MASSAGE);
         email_text = findViewById(R.id.email);
