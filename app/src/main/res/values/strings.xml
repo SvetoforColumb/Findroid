@@ -30,7 +30,7 @@
     <string name="kws_caption">To start say \"Start\".</string>
     <string name="menu_caption">Say \"go\" to give robot the distanation</string>
     <string name="praparing_recognizer">Preparing the recognizer</string>
-    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_main2">Findroid</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
