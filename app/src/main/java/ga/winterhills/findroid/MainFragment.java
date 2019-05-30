@@ -1,6 +1,7 @@
 package ga.winterhills.findroid;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -46,6 +47,7 @@ public class MainFragment extends Fragment {
     private SpeechRecognizer recognizer;
     private HashMap<String, Integer> captions;
     SharedPreferences mSettings;
+    OnViewCreatedListener onViewCreatedListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,25 +60,29 @@ public class MainFragment extends Fragment {
         captions.put(CITY_MOSCOW, R.string.city_Moscow);
 
 
-
-
-        ((TextView) view.findViewById(R.id.caption_text))
-                .setText("Preparing the recognizer");
-
-        // Check if user has given permission to record audio
-        int permissionCheck = ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.RECORD_AUDIO);
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
-            return view;
-        }
-        // Recognizer initialization is a time-consuming and it involves IO,
-        // so we execute it in async task
-        //new MainActivity.SetupTask(this).execute();
-
         mainLayout = view.findViewById(R.id.main_layout);
         mainLayout.addView(new DrawMap(getContext()));
+
         return view;
     }
 
+    public interface OnViewCreatedListener {
+        public void ViewCreated();
+    }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            onViewCreatedListener = (OnViewCreatedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        onViewCreatedListener.ViewCreated();
+    }
 }
