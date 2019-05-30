@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,8 +61,13 @@ public class MainFragment extends Fragment {
         captions.put(CITY_MOSCOW, R.string.city_Moscow);
 
 
+
+
+        DrawMap drawMapView = new DrawMap(getContext());
         mainLayout = view.findViewById(R.id.main_layout);
-        mainLayout.addView(new DrawMap(getContext()));
+        LinearLayout.LayoutParams drawMapLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0);
+        drawMapView.setLayoutParams(drawMapLayoutParams);
+        mainLayout.addView(drawMapView);
 
         return view;
     }
@@ -76,7 +82,7 @@ public class MainFragment extends Fragment {
         try {
             onViewCreatedListener = (OnViewCreatedListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
+            throw new ClassCastException(activity.toString() + " must implement onViewCreatedListener");
         }
     }
 
