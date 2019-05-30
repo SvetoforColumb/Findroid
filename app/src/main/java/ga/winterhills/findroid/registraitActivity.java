@@ -38,7 +38,7 @@ public class registraitActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrait);
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.email_nav);
         mPasswordView = (EditText) findViewById(R.id.password);
         createNewUser=false;
         Button registretion = (Button) findViewById(R.id.regist);

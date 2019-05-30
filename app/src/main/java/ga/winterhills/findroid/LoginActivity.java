@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.email_nav);
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -374,7 +374,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 e.putBoolean(APP_PREFERENCES_LOGIN, false);
                 e.apply();
                 Intent intentObj = new Intent(LoginActivity.this, MainActivity.class);
-                TextView emailTV = findViewById(R.id.email);
+                TextView emailTV = findViewById(R.id.email_nav);
                 String email = emailTV.getText().toString();
                 intentObj.putExtra(EXTRA_MASSAGE, email);
                 finish();
