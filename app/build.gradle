@@ -18,6 +18,11 @@ android {
     }
     useLibrary 'org.apache.http.legacy'
 }
+repositories {
+    maven {
+        url 'https://jitpack.io' 
+    }
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -29,6 +34,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(':pocketsphinx-android-5prealpha-release')
+    implementation 'com.github.timigod:android-chat-ui:v0.1.4'
 }
 ant.importBuild 'assets.xml'
 preBuild.dependsOn(list, checksum)

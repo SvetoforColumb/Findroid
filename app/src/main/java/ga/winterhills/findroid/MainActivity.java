@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
+import co.intentservice.chatui.ChatView;
+import co.intentservice.chatui.models.ChatMessage;
 import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.RecognitionListener;
@@ -129,7 +131,6 @@ public class MainActivity extends AppCompatActivity
         email_text.setText(email);
 
 
-
         return true;
     }
 
@@ -187,8 +188,8 @@ public class MainActivity extends AppCompatActivity
         captions.put(MENU_SEARCH, R.string.menu_caption);
         captions.put(CITY_MOSCOW, R.string.city_Moscow);
 
-        ((TextView) findViewById(R.id.caption_text))
-                .setText("Preparing the recognizer");
+//        ((TextView) findViewById(R.id.caption_text)) // todo: add to chatview
+//                .setText("Preparing the recognizer");
 
         // Check if user has given permission to record audio
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
@@ -220,12 +221,12 @@ public class MainActivity extends AppCompatActivity
         }
         @Override
         protected void onPostExecute(Exception result) {
-            if (result != null) {
-                ((TextView) activityReference.get().findViewById(R.id.caption_text))
-                        .setText("Failed to init recognizer " + result);
-            } else {
-                activityReference.get().switchSearch(KWS_SEARCH);
-            }
+//            if (result != null) {
+//                ((TextView) activityReference.get().findViewById(R.id.caption_text))
+//                        .setText("Failed to init recognizer " + result);
+//            } else {
+//                activityReference.get().switchSearch(KWS_SEARCH);
+//            } // todo: add to chatview
         }
     }
 
@@ -274,8 +275,8 @@ public class MainActivity extends AppCompatActivity
             switchSearch(CITY_MOSCOW);
 //        else if (text.equals(FORECAST_SEARCH))
 //            switchSearch(FORECAST_SEARCH);
-        else
-            ((TextView) findViewById(R.id.result_text)).setText(text);
+//        else
+//            ((TextView) findViewById(R.id.result_text)).setText(text); // todo: add to chatview
     }
 
     /**
@@ -283,7 +284,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onResult(Hypothesis hypothesis) {
-        ((TextView) findViewById(R.id.result_text)).setText("");
+//        ((TextView) findViewById(R.id.result_text)).setText(""); // todo: add to chatview
         if (hypothesis != null) {
             String text = hypothesis.getHypstr();
             makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
@@ -313,7 +314,7 @@ public class MainActivity extends AppCompatActivity
             recognizer.startListening(searchName, 60000);
 
         String caption = getResources().getString(captions.get(searchName));
-        ((TextView) findViewById(R.id.caption_text)).setText(caption);
+//        ((TextView) findViewById(R.id.caption_text)).setText(caption); // todo: add to chatview
     }
 
     private void setupRecognizer(File assetsDir) throws IOException {
@@ -356,7 +357,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onError(Exception e) {
-        ((TextView) findViewById(R.id.caption_text)).setText(e.getMessage());
+//        ((TextView) findViewById(R.id.caption_text)).setText(e.getMessage()); // todo: add to chatview
     }
 
     @Override

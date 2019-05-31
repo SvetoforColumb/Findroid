@@ -54,6 +54,10 @@ public class DrawMap extends View {
         mPaint.setTextSize(30);
         canvas.drawText("Moscow", 400,400,mPaint);
         canvas.drawText("Chelyabinsk", 900,900,mPaint);
+        int width = getWidth();
+        int height = getHeight();
+        mPaint.setTextSize(40);
+        //canvas.drawText(width + " " + height, 100, 300, mPaint);
         canvas.save();
         canvas.restore();
 //        mapData = new MapData();

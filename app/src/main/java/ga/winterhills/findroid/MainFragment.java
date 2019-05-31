@@ -2,13 +2,16 @@ package ga.winterhills.findroid;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,8 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 
+import co.intentservice.chatui.ChatView;
+import co.intentservice.chatui.models.ChatMessage;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
 
 
@@ -40,7 +45,7 @@ public class MainFragment extends Fragment {
     private static final String CITY_MOSCOW = "moscow";
 
     /* Keyword we are looking for to activate menu */
-    private static final String KEYPHRASE = "start";
+    private static final String KEYPHRASE = "start robot"; //todo: import phrase in dictionary
 
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
@@ -59,17 +64,20 @@ public class MainFragment extends Fragment {
         captions.put(KWS_SEARCH, R.string.kws_caption);
         captions.put(MENU_SEARCH, R.string.menu_caption);
         captions.put(CITY_MOSCOW, R.string.city_Moscow);
-
-
-
-
-        DrawMap drawMapView = new DrawMap(getContext());
-        mainLayout = view.findViewById(R.id.main_layout);
-        LinearLayout.LayoutParams drawMapLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 0);
-        drawMapView.setLayoutParams(drawMapLayoutParams);
-        mainLayout.addView(drawMapView);
-
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
+        DrawMap drawMapView = new DrawMap(getContext());
+        mainLayout = getView().findViewById(R.id.main_layout);
+        LinearLayout.LayoutParams drawMapLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, displaymetrics.widthPixels);
+        drawMapView.setLayoutParams(drawMapLayoutParams);
+        mainLayout.addView(drawMapView,0);
+        VoiceChatView chatView = (VoiceChatView) getView().findViewById(R.id.chat_view);
+        chatView.addMessage(new ChatMessage("hello\nmessage", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
     }
 
     public interface OnViewCreatedListener {
