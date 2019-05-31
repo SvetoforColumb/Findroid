@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity
 
         //enter login activity if not login
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+
         boolean hasVisited = mSettings.getBoolean("hasVisited", true); //todo change "true" with false
         if (!hasVisited) {
             SharedPreferences.Editor e = mSettings.edit();
@@ -190,7 +191,8 @@ public class MainActivity extends AppCompatActivity
 
 //        ((TextView) findViewById(R.id.caption_text)) // todo: add to chatview
 //                .setText("Preparing the recognizer");
-
+        VoiceChatView chatView = (VoiceChatView) findViewById(R.id.chat_view);
+        chatView.addMessage(new ChatMessage("Preparing the recognizer", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
         // Check if user has given permission to record audio
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
@@ -221,12 +223,12 @@ public class MainActivity extends AppCompatActivity
         }
         @Override
         protected void onPostExecute(Exception result) {
-//            if (result != null) {
-//                ((TextView) activityReference.get().findViewById(R.id.caption_text))
-//                        .setText("Failed to init recognizer " + result);
-//            } else {
-//                activityReference.get().switchSearch(KWS_SEARCH);
-//            } // todo: add to chatview
+            if (result != null) {
+                VoiceChatView chatView = (VoiceChatView) activityReference.get().findViewById(R.id.chat_view);
+                chatView.addMessage(new ChatMessage("Failed to init recognizer " + result, System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
+            } else {
+                activityReference.get().switchSearch(KWS_SEARCH);
+            } // todo: add to chatview
         }
     }
 
@@ -273,10 +275,10 @@ public class MainActivity extends AppCompatActivity
             switchSearch(MENU_SEARCH);
         else if (text.equals(CITY_MOSCOW))
             switchSearch(CITY_MOSCOW);
-//        else if (text.equals(FORECAST_SEARCH))
-//            switchSearch(FORECAST_SEARCH);
-//        else
-//            ((TextView) findViewById(R.id.result_text)).setText(text); // todo: add to chatview
+        else {
+            VoiceChatView chatView = (VoiceChatView) findViewById(R.id.chat_view);
+            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+        }
     }
 
     /**
@@ -284,10 +286,13 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onResult(Hypothesis hypothesis) {
-//        ((TextView) findViewById(R.id.result_text)).setText(""); // todo: add to chatview
+//        ((TextView) findViewById(R.id.result_text)).setText("");
+
         if (hypothesis != null) {
             String text = hypothesis.getHypstr();
             makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+            VoiceChatView chatView = (VoiceChatView) findViewById(R.id.chat_view);
+            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
         }
     }
 
@@ -314,7 +319,8 @@ public class MainActivity extends AppCompatActivity
             recognizer.startListening(searchName, 60000);
 
         String caption = getResources().getString(captions.get(searchName));
-//        ((TextView) findViewById(R.id.caption_text)).setText(caption); // todo: add to chatview
+        VoiceChatView chatView = (VoiceChatView) findViewById(R.id.chat_view);
+        chatView.addMessage(new ChatMessage(caption, System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
     }
 
     private void setupRecognizer(File assetsDir) throws IOException {
@@ -357,7 +363,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onError(Exception e) {
-//        ((TextView) findViewById(R.id.caption_text)).setText(e.getMessage()); // todo: add to chatview
+        VoiceChatView chatView = (VoiceChatView) findViewById(R.id.chat_view);
+        chatView.addMessage(new ChatMessage(e.getMessage(), System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
+
     }
 
     @Override
