@@ -40,6 +40,7 @@
 
     <string name="menu_home">Home</string>
     <string name="menu_help">Shop</string>
+    <string name="menu_log_out">Log out</string>
     <string name="menu_exit">Exit</string>
 
     <!-- TODO: Remove or change this placeholder text -->

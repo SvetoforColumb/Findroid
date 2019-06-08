@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
         //enter login activity if not login
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
-        boolean hasVisited = mSettings.getBoolean("hasVisited", true); //todo change "true" with false
+        boolean hasVisited = mSettings.getBoolean("hasVisited", false); //todo change "true" with false
         if (!hasVisited) {
             SharedPreferences.Editor e = mSettings.edit();
             e.putBoolean(APP_PREFERENCES_LOGIN, false);
@@ -163,6 +163,14 @@ public class MainActivity extends AppCompatActivity
             fragmentClass = MainFragment.class;
         } else if (id == R.id.nav_shop) {
             fragmentClass = ShopFragment.class;
+        } else if (id == R.id.nav_log_out) {
+            SharedPreferences.Editor e = mSettings.edit();
+            e.putBoolean(APP_PREFERENCES_LOGIN, false);
+            e.putBoolean("hasVisited", true);
+            e.apply();
+            Intent intentObj = new Intent(MainActivity.this, LoginActivity.class);
+            finish();
+            startActivity(intentObj);
         } else if (id == R.id.nav_exit) {
             finish();
         }

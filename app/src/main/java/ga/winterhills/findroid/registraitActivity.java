@@ -53,6 +53,7 @@ public class registraitActivity extends AppCompatActivity {
                         String password = mPasswordView.getText().toString();
                         create = new CreateNewProduct(email, password);
                         create.execute();
+                        finish();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
