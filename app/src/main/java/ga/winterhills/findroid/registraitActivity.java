@@ -160,8 +160,8 @@ public class registraitActivity extends AppCompatActivity {
             userCreaterEarlier=false;
         }
 
-        private static final String url_newUser="https://findroid.napoleonthecake.ru/new_user.php";
-        private static final String url_checkUser="https://findroid.napoleonthecake.ru/check_user.php";
+        private static final String url_newUser="http://www.zaural-vodokanal.ru/php/rob/new_user.php";
+        private static final String url_checkUser="http://www.zaural-vodokanal.ru/php/rob/check_user.php";
         private static final String TAG_SUCCESS="success";
         @Override
         protected Boolean doInBackground(Void... args) {

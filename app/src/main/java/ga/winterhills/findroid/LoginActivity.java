@@ -327,7 +327,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mPassword = password;
         }
 
-        private static final String url_checkUser="https://findroid.napoleonthecake.ru/check_user.php";
+        private static final String url_checkUser="http://www.zaural-vodokanal.ru/php/rob/check_user.php";
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
