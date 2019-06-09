@@ -3,6 +3,8 @@ package ga.winterhills.findroid;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -22,6 +24,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class registraitActivity extends AppCompatActivity {
 
@@ -33,27 +37,36 @@ public class registraitActivity extends AppCompatActivity {
     private boolean createNewUser;
     private CreateNewProduct create;
     JSONParser jsonParser = new JSONParser();
+    boolean finish = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrait);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email_nav);
         mPasswordView = (EditText) findViewById(R.id.password);
-        createNewUser=false;
+        createNewUser = false;
         Button registretion = (Button) findViewById(R.id.regist);
         registretion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
                     attemptLogin();
-                    if(createNewUser){
+                    if (createNewUser) {
                         Log.i("TAG", "create");
                         String email = mEmailView.getText().toString();
                         String password = mPasswordView.getText().toString();
                         create = new CreateNewProduct(email, password);
                         create.execute();
-                        finish();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(registraitActivity.this);
+                        builder.setTitle("Активируйте свой аккаунт!")
+                                .setMessage("Далее для работы вам потребуется активировать свой аккаунт. Для этого зайдите на свою почту и пройдите по ссылке.");
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                        Timer timer=new Timer();
+                        MyTimerTask task = new MyTimerTask();
+                        timer.schedule(task,5000);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -75,7 +88,7 @@ public class registraitActivity extends AppCompatActivity {
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-        boolean checkCreate=true;
+        boolean checkCreate = true;
         boolean cancel = false;
         View focusView = null;
 
@@ -84,7 +97,7 @@ public class registraitActivity extends AppCompatActivity {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
-            checkCreate=false;
+            checkCreate = false;
         }
 
         // Check for a valid email address.
@@ -92,18 +105,18 @@ public class registraitActivity extends AppCompatActivity {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-            checkCreate=false;
+            checkCreate = false;
         } else if (!isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
-            checkCreate=false;
+            checkCreate = false;
         }
-        createNewUser=checkCreate;
+        createNewUser = checkCreate;
     }
 
     private boolean isEmailValid(String email) {
-        return (email.contains("@")&&(email.contains(".ru")||email.contains(".com")));
+        return (email.contains("@") && (email.contains(".ru") || email.contains(".com")));
     }
 
     private boolean isPasswordValid(String password) {
@@ -144,7 +157,8 @@ public class registraitActivity extends AppCompatActivity {
         }
     }
 
-    JSONObject json=null;
+    JSONObject json = null;
+
     class CreateNewProduct extends AsyncTask<Void, Void, Boolean> {
 
         String mEmail;
@@ -157,13 +171,14 @@ public class registraitActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPreExecute(){
-            userCreaterEarlier=false;
+        protected void onPreExecute() {
+            userCreaterEarlier = false;
         }
 
-        private static final String url_newUser="http://www.zaural-vodokanal.ru/php/rob/new_user.php";
-        private static final String url_checkUser="http://www.zaural-vodokanal.ru/php/rob/check_user.php";
-        private static final String TAG_SUCCESS="success";
+        private static final String url_newUser = "http://www.zaural-vodokanal.ru/php/rob/new_user.php";
+        private static final String url_checkUser = "http://www.zaural-vodokanal.ru/php/rob/check_user.php";
+        private static final String TAG_SUCCESS = "success";
+
         @Override
         protected Boolean doInBackground(Void... args) {
             Log.i("TAG", "back");
@@ -179,7 +194,7 @@ public class registraitActivity extends AppCompatActivity {
                 if (success == 0) {
                     json = jsonParser.makeHttpRequest(url_newUser, "POST", values);
                     userCreaterEarlier = false;
-                }else {
+                } else {
                     userCreaterEarlier = true;
                 }
             } catch (JSONException e) {
@@ -190,10 +205,22 @@ public class registraitActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(final Boolean success){
-            if(userCreaterEarlier) mEmailView.setError("User was creater erlier");
+        protected void onPostExecute(final Boolean success) {
+            if (userCreaterEarlier) mEmailView.setError("User was creater erlier");
         }
 
     }
 
+    class MyTimerTask extends TimerTask {
+
+        @Override
+        public void run() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            });
+        }
+    }
 }

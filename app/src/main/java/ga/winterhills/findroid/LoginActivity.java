@@ -3,9 +3,11 @@ package ga.winterhills.findroid;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
@@ -321,6 +323,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final String mPassword;
         private boolean emailTrue=false;
         private boolean passwordTrue=false;
+        private int activated;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
@@ -342,6 +345,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         emailTrue = true;
                         String pass = getPassword(json.getString("user"));
                         passwordTrue = pass.equals(mPassword);
+                        activated=json.getInt("activated");
                     }
             } catch (InterruptedException e) {
                 return false;
@@ -356,8 +360,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     return pieces[1].equals(mPassword);
                 }
             }
-
-            // TODO: register the new account here.
             return true;
         }
 
@@ -367,7 +369,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
 
-            if (success&&passwordTrue) {
+            if (success&&passwordTrue&&activated==1) {
                 SharedPreferences mSettings;
                 mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor e = mSettings.edit();
@@ -387,6 +389,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if(!emailTrue) {
                     mEmailView.setError(getString(R.string.incorrect_user));
                     mEmailView.requestFocus();
+                }
+                if(activated==0){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                    builder.setTitle("Активируйте свой аккаунт!")
+                            .setMessage("Вы не активировали свой аккаунт. Для активации зайдите на свою почту и пройдите по ссылке.");
+                    AlertDialog alert = builder.create();
+                    alert.show();
                 }
             }
         }
