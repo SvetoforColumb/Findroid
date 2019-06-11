@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.view.View;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,46 +67,27 @@ public class DrawMap extends View {
 
     JSONParser jsonParser = new JSONParser();
     JSONObject json=null;
-    String url_getCoorCity="http://www.zaural-vodokanal.ru/php/rob/getCoorCity.php";
-    String url_getWays="http://www.zaural-vodokanal.ru/php/rob/getWays.php";
+    String url_getMap="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/getMap.php";
+    String url_getWays="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/getWays.php";
 
     class MapData extends AsyncTask<Void, Void, Boolean> {
-        String[] nameOfCities={"Moscow", "Penza", "Chelyabinsk", "Kazan", "Sochi", "London", "Berlin", "Volgograd"};
-        City[] country;
-        Canvas canvas;
-        Paint paint;
-
-        class City {
-            String name;
-            int id;
+        String[] nameOfCities={"Moscow", "Penza","Tomsk", "Sochi", "Azov", "Amursk", "Volgograd", "Kazan", "Ufa", "Chelyabinsk"};
+        class Block{
             int x;
             int y;
-           ArrayList<Way> roads;
-
-           City(String name1, int x1, int y1, int id1) {
-                name = name1;
-                x = x1;
-               y = y1;
-                id = id1;
-                roads=new ArrayList<>();
-            }
+            int idCity; //0 = нет города;
+            String city;
+            int block; //image
+            boolean up;
+            boolean down;
+            boolean left;
+            boolean right;
         }
 
-        class Way{
-            int idFrom;
-            int idTo;
-            int value;
-
-            Way(int from, int to, int val)
-            {
-                idFrom =from-1;
-                idTo=to-1;
-                value=val;
-            }
-        }
+        Block Map[];
 
         MapData(){
-            country=new City[8];
+            Map=new Block[100];
         }
 
 
@@ -113,24 +95,20 @@ public class DrawMap extends View {
         @Override
         protected Boolean doInBackground(Void... args){
             List<NameValuePair> values = new ArrayList<>();
-            json = JSONParser.makeHttpRequest(url_getCoorCity, "GET", values);
-            for(int i=0; i<nameOfCities.length; i++){
-                try {
-                    country[i]=getParamCity(json.getString(nameOfCities[i]), nameOfCities[i]);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            json = JSONParser.makeHttpRequest(url_getWays, "GET", values);
-            int count=0;
+            values.add(new BasicNameValuePair("login", "dasc")); // TODO: передавать сюда login
+            json = JSONParser.makeHttpRequest(url_getMap, "GET", values);
             try {
-                while(json.getString("way #"+count)!=null) {
-                    Way way=getWay(json.getString("way #"+count));
-                    if(way.idFrom<country.length)
-                        country[way.idFrom].roads.add(way);
-                    else break;
-                    count++;
+                for (int i = 0; i < 100; i++) {
+                    JSONObject block = new JSONObject(json.getString("block #" + i));
+                    Map[i].x=block.getInt("x");
+                    Map[i].y=block.getInt("y");
+                    Map[i].idCity=block.getInt("city");
+                    Map[i].city=nameOfCities[Map[i].idCity-1];
+                    Map[i].block=block.getInt("image");
+                    Map[i].left=block.getBoolean("left");
+                    Map[i].right=block.getBoolean("right");
+                    Map[i].up=block.getBoolean("up");
+                    Map[i].down=block.getBoolean("down");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -144,15 +122,7 @@ public class DrawMap extends View {
 
         }
 
-        City getParamCity(String params, String name) throws JSONException {
-            JSONObject jObj = new JSONObject(params);
-            return new City(name, jObj.getInt("coor_x"), jObj.getInt("coor_y"), jObj.getInt("id"));
-        }
 
-        Way getWay(String params) throws JSONException {
-            JSONObject jObj = new JSONObject(params);
-            return new Way(jObj.getInt("cityFrom"), jObj.getInt("cityTo"), jObj.getInt("value"));
-        }
     }
 
 }

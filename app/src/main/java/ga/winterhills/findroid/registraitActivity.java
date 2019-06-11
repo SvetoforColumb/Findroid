@@ -175,8 +175,8 @@ public class registraitActivity extends AppCompatActivity {
             userCreaterEarlier = false;
         }
 
-        private static final String url_newUser = "http://www.zaural-vodokanal.ru/php/rob/new_user.php";
-        private static final String url_checkUser = "http://www.zaural-vodokanal.ru/php/rob/check_user.php";
+        private static final String url_newUser = "http://www.zaural-vodokanal.ru/php/rob/ForAndroid/new_user.php";
+        private static final String url_checkUser = "http://www.zaural-vodokanal.ru/php/rob/ForAndroid/check_user.php";
         private static final String TAG_SUCCESS = "success";
 
         @Override

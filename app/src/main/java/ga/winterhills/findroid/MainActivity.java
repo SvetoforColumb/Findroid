@@ -161,6 +161,10 @@ public class MainActivity extends AppCompatActivity
             fragmentClass = MainFragment.class;
         } else if (id == R.id.nav_shop) {
             fragmentClass = ShopFragment.class;
+        } else if (id == R.id.nav_log_out) {
+            Intent intentObj = new Intent(MainActivity.this, LoginActivity.class);
+            finish();
+            startActivity(intentObj);
         } else if (id == R.id.nav_exit) {
             finish();
         }
