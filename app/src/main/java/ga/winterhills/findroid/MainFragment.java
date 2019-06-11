@@ -44,11 +44,6 @@ public class MainFragment extends Fragment {
     private static final String KWS_SEARCH = "wakeup";
     private static final String CITY_MOSCOW = "moscow";
 
-    /* Keyword we are looking for to activate menu */
-    private static final String KEYPHRASE = "start robot"; //todo: import phrase in dictionary
-
-    /* Used to handle permission request */
-    private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 
     private SpeechRecognizer recognizer;
     private HashMap<String, Integer> captions;
@@ -77,7 +72,7 @@ public class MainFragment extends Fragment {
         drawMapView.setLayoutParams(drawMapLayoutParams);
         mainLayout.addView(drawMapView,0);
         VoiceChatView chatView = (VoiceChatView) getView().findViewById(R.id.chat_view);
-        chatView.addMessage(new ChatMessage("hello\nmessage", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
+        //chatView.addMessage(new ChatMessage("hello\nmessage", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
     }
 
     public interface OnViewCreatedListener {

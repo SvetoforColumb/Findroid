@@ -373,7 +373,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 SharedPreferences mSettings;
                 mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor e = mSettings.edit();
-                e.putBoolean(APP_PREFERENCES_LOGIN, false);
+                e.putBoolean(APP_PREFERENCES_LOGIN, true);
                 e.apply();
                 Intent intentObj = new Intent(LoginActivity.this, MainActivity.class);
                 TextView emailTV = findViewById(R.id.email_nav);

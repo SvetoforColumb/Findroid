@@ -87,11 +87,12 @@ public class MainActivity extends AppCompatActivity
         //enter login activity if not login
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
-        boolean hasVisited = mSettings.getBoolean("hasVisited", false); //todo change "true" with false
-        if (!hasVisited) {
+        //boolean hasVisited = mSettings.getBoolean("hasVisited", false);
+        boolean loggedIn = mSettings.getBoolean(APP_PREFERENCES_LOGIN, false);
+        if (!loggedIn) {
             SharedPreferences.Editor e = mSettings.edit();
             e.putBoolean(APP_PREFERENCES_LOGIN, false);
-            e.putBoolean("hasVisited", true);
+            //e.putBoolean("hasVisited", true);
             e.apply();
             Intent intentObj = new Intent(MainActivity.this, LoginActivity.class);
             finish();
@@ -126,10 +127,7 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
 
-        Intent intentObj = getIntent();
-        String email=intentObj.getStringExtra(LoginActivity.UserLoginTask.EXTRA_MASSAGE);
-        email_text = findViewById(R.id.email_nav);
-        email_text.setText(email);
+
 
 
         return true;
@@ -163,14 +161,6 @@ public class MainActivity extends AppCompatActivity
             fragmentClass = MainFragment.class;
         } else if (id == R.id.nav_shop) {
             fragmentClass = ShopFragment.class;
-        } else if (id == R.id.nav_log_out) {
-            SharedPreferences.Editor e = mSettings.edit();
-            e.putBoolean(APP_PREFERENCES_LOGIN, false);
-            e.putBoolean("hasVisited", true);
-            e.apply();
-            Intent intentObj = new Intent(MainActivity.this, LoginActivity.class);
-            finish();
-            startActivity(intentObj);
         } else if (id == R.id.nav_exit) {
             finish();
         }
@@ -183,7 +173,13 @@ public class MainActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
         item.setChecked(true);
         setTitle(item.getTitle());
-
+        boolean loggedIn = mSettings.getBoolean(APP_PREFERENCES_LOGIN, false);
+        if (loggedIn) {
+            Intent intentObj = getIntent();
+            String email = intentObj.getStringExtra(LoginActivity.UserLoginTask.EXTRA_MASSAGE);
+            email_text = findViewById(R.id.email_nav);
+            email_text.setText(email);
+        }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -275,16 +271,21 @@ public class MainActivity extends AppCompatActivity
     public void onPartialResult(Hypothesis hypothesis) {
         if (hypothesis == null)
             return;
-
+        VoiceChatView chatView = (VoiceChatView) findViewById(R.id.chat_view);
         String text = hypothesis.getHypstr();
-        if (text.equals(KEYPHRASE))
+        if (text.equals(KEYPHRASE)) {
             switchSearch(MENU_SEARCH);
-        else if (text.equals(MENU_SEARCH))
+            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+        }
+        else if (text.equals(MENU_SEARCH)){
             switchSearch(MENU_SEARCH);
-        else if (text.equals(CITY_MOSCOW))
+            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+        }
+        else if (text.equals(CITY_MOSCOW)) {
             switchSearch(CITY_MOSCOW);
+            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+        }
         else {
-            VoiceChatView chatView = (VoiceChatView) findViewById(R.id.chat_view);
             chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
         }
     }
@@ -300,7 +301,7 @@ public class MainActivity extends AppCompatActivity
             String text = hypothesis.getHypstr();
             makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
             VoiceChatView chatView = (VoiceChatView) findViewById(R.id.chat_view);
-            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
+            //chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
         }
     }
 
