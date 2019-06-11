@@ -106,6 +106,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
 
         getSupportActionBar().hide();
+
+
+
+
     }
 
     private void populateAutoComplete() {

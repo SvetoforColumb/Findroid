@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 
 import org.apache.http.NameValuePair;
@@ -17,6 +18,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class DrawMap extends View {
 
     private Paint mPaint = new Paint();
     private Rect mRect = new Rect();
-    //MapData mapData;
+    MapData mapData;
 
     public DrawMap(Context context) {
         super(context);
@@ -61,36 +63,36 @@ public class DrawMap extends View {
         //canvas.drawText(width + " " + height, 100, 300, mPaint);
         canvas.save();
         canvas.restore();
-//        mapData = new MapData();
-//        mapData.execute((Void) null);
     }
 
-    JSONParser jsonParser = new JSONParser();
-    JSONObject json=null;
-    String url_getMap="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/getMap.php";
-    String url_getWays="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/getWays.php";
 
     class MapData extends AsyncTask<Void, Void, Boolean> {
         String[] nameOfCities={"Moscow", "Penza","Tomsk", "Sochi", "Azov", "Amursk", "Volgograd", "Kazan", "Ufa", "Chelyabinsk"};
         class Block{
-            int x;
+            public int x;
             int y;
             int idCity; //0 = нет города;
             String city;
             int block; //image
-            boolean up;
-            boolean down;
-            boolean left;
-            boolean right;
+            int up;
+            int down;
+            int left;
+            int right;
         }
 
         Block Map[];
 
         MapData(){
             Map=new Block[100];
+            for (int i=0; i<100; i++)
+            {
+                Map[i]=new Block();
+            }
         }
 
-
+        JSONObject json=null;
+        String url_getMap="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/getMap.php";
+        String block;
 
         @Override
         protected Boolean doInBackground(Void... args){
@@ -99,21 +101,35 @@ public class DrawMap extends View {
             json = JSONParser.makeHttpRequest(url_getMap, "GET", values);
             try {
                 for (int i = 0; i < 100; i++) {
-                    JSONObject block = new JSONObject(json.getString("block #" + i));
-                    Map[i].x=block.getInt("x");
-                    Map[i].y=block.getInt("y");
-                    Map[i].idCity=block.getInt("city");
-                    Map[i].city=nameOfCities[Map[i].idCity-1];
-                    Map[i].block=block.getInt("image");
-                    Map[i].left=block.getBoolean("left");
-                    Map[i].right=block.getBoolean("right");
-                    Map[i].up=block.getBoolean("up");
-                    Map[i].down=block.getBoolean("down");
+                    block = json.getString("block #" + i);
+                    Map[i]=oneBlock(block);
+                    Log.i("mt1","x= "+Map[i].x+" y= "+Map[i].y+" city= "+Map[i].city+" block= "+Map[i].block);
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             return true;
+        }
+
+        private Block oneBlock(String js){
+            Block bl=new Block();
+            try {
+                JSONObject jObj = new JSONObject(js);
+                bl.x=jObj.getInt("x");
+                bl.y=jObj.getInt("y");
+                bl.idCity=jObj.getInt("city");
+                if(jObj.getInt("city")!=0)bl.city=nameOfCities[bl.idCity-1];
+                else bl.city="";
+                bl.block=jObj.getInt("image");
+                bl.left=jObj.getInt("left");
+                bl.right=jObj.getInt("right");
+                bl.up=jObj.getInt("up");
+                bl.down=jObj.getInt("down");
+            } catch (JSONException e) {
+                Log.e("TAG", "Error parsing data " + e.toString());
+            }
+            return bl;
         }
 
         @Override
