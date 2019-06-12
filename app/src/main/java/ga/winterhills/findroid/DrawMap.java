@@ -1,8 +1,6 @@
 package ga.winterhills.findroid;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 
@@ -19,22 +18,80 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Console;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import ga.winterhills.findroid.R;
 
 public class DrawMap extends View {
     boolean taskDone;
     private Paint mPaint = new Paint();
     private Rect mRect = new Rect();
     MapData mapData;
+    int[] x;
+    int[] y;
+    HashMap<Integer, Bitmap> block_map;
+    Bitmap map_block_0000;
+    Bitmap map_block_0001;
+    Bitmap map_block_0010;
+    Bitmap map_block_0011;
+    Bitmap map_block_0100;
+    Bitmap map_block_0101;
+    Bitmap map_block_0110;
+    Bitmap map_block_0111;
+    Bitmap map_block_1000;
+    Bitmap map_block_1001;
+    Bitmap map_block_1010;
+    Bitmap map_block_1011;
+    Bitmap map_block_1100;
+    Bitmap map_block_1101;
+    Bitmap map_block_1110;
+    Bitmap map_block_1111;
 
     public DrawMap(Context context) {
         super(context);
         mapData = new MapData();
         mapData.execute();
+        x  = new int[100];
+        y = new int[100];
+        block_map = new HashMap<Integer, Bitmap>();
+        map_block_0000 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0000);
+        block_map.put(0,map_block_0000);
+        map_block_0001 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0001);
+        block_map.put(1,map_block_0001);
+        map_block_0010 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0010);
+        block_map.put(10,map_block_0010);
+        map_block_0011 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0011);
+        block_map.put(11,map_block_0011);
+        map_block_0100 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0100);
+        block_map.put(100,map_block_0100);
+        map_block_0101 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0101);
+        block_map.put(101,map_block_0101);
+        map_block_0110 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0110);
+        block_map.put(110,map_block_0110);
+        map_block_0111 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0111);
+        block_map.put(111,map_block_0111);
+        map_block_1000 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1000);
+        block_map.put(1000,map_block_1000);
+        map_block_1001 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1001);
+        block_map.put(1001,map_block_1001);
+        map_block_1010 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1010);
+        block_map.put(1010,map_block_1010);
+        map_block_1011 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1011);
+        block_map.put(1011,map_block_1011);
+        map_block_1100 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1100);
+        block_map.put(1100,map_block_1100);
+        map_block_1101 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1101);
+        block_map.put(1101,map_block_1101);
+        map_block_1110 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1110);
+        block_map.put(1110,map_block_1110);
+        map_block_1111 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1111);
+        block_map.put(1111,map_block_1111);
     }
 
     @Override
@@ -53,75 +110,103 @@ public class DrawMap extends View {
         mPaint.setColor(Color.WHITE);
         canvas.drawPaint(mPaint);
         mPaint.setAntiAlias(true);
-        Bitmap map_block_0000 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0000);
-        Bitmap map_block_0001 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0001);
-        Bitmap map_block_0010 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0010);
-        Bitmap map_block_0011 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0011);
-        Bitmap map_block_0100 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0100);
-        Bitmap map_block_0101 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0101);
-        Bitmap map_block_0110 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0110);
-        Bitmap map_block_0111 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0111);
-        Bitmap map_block_1000 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1000);
-        Bitmap map_block_1001 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1001);
-        Bitmap map_block_1010 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1010);
-        Bitmap map_block_1011 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1011);
-        Bitmap map_block_1100 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1100);
-        Bitmap map_block_1101 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1101);
-        Bitmap map_block_1110 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1110);
-        Bitmap map_block_1111 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0001);
-        map_block_0000= map_block_0000.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_0001= map_block_0001.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_0010= map_block_0010.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_0011= map_block_0011.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_0100= map_block_0100.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_0101= map_block_0101.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_0110= map_block_0110.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_0111= map_block_0111.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_1000= map_block_1000.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_1001= map_block_1001.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_1010= map_block_1010.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_1011= map_block_1011.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_1100= map_block_1100.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_1101= map_block_1101.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_1110= map_block_1110.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_1111= map_block_1111.copy(Bitmap.Config.ARGB_8888, true);
-        map_block_0000.setHeight(height/10);
-        map_block_0000.setWidth(width/10);
-        map_block_0001.setHeight(height/10);
-        map_block_0001.setWidth(width/10);
-        map_block_0010.setHeight(height/10);
-        map_block_0010.setWidth(width/10);
-        map_block_0011.setHeight(height/10);
-        map_block_0011.setWidth(width/10);
-        map_block_0100.setHeight(height/10);
-        map_block_0100.setWidth(width/10);
-        map_block_0101.setHeight(height/10);
-        map_block_0101.setWidth(width/10);
-        map_block_0110.setHeight(height/10);
-        map_block_0110.setWidth(width/10);
-        map_block_0111.setHeight(height/10);
-        map_block_0111.setWidth(width/10);
-        map_block_1000.setHeight(height/10);
-        map_block_1000.setWidth(width/10);
-        map_block_1001.setHeight(height/10);
-        map_block_1001.setWidth(width/10);
-        map_block_1010.setHeight(height/10);
-        map_block_1010.setWidth(width/10);
-        map_block_1011.setHeight(height/10);
-        map_block_1011.setWidth(width/10);
-        map_block_1100.setHeight(height/10);
-        map_block_1100.setWidth(width/10);
-        map_block_1101.setHeight(height/10);
-        map_block_1101.setWidth(width/10);
-        map_block_1110.setHeight(height/10);
-        map_block_1110.setWidth(width/10);
-        map_block_1111.setHeight(height/10);
-        map_block_1111.setWidth(width/10);
+//
+//        map_block_0000= map_block_0000.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_0001= map_block_0001.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_0010= map_block_0010.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_0011= map_block_0011.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_0100= map_block_0100.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_0101= map_block_0101.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_0110= map_block_0110.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_0111= map_block_0111.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_1000= map_block_1000.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_1001= map_block_1001.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_1010= map_block_1010.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_1011= map_block_1011.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_1100= map_block_1100.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_1101= map_block_1101.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_1110= map_block_1110.copy(Bitmap.Config.ARGB_8888, true);
+//        map_block_1111= map_block_1111.copy(Bitmap.Config.ARGB_8888, true);
+        int blocksize = height/10;
+        map_block_0000 = convertToMutable(map_block_0000);
+        map_block_0001 = convertToMutable(map_block_0001);
+        map_block_0010 = convertToMutable(map_block_0010);
+        map_block_0011 = convertToMutable(map_block_0011);
+        map_block_0100 = convertToMutable(map_block_0100);
+        map_block_0101 = convertToMutable(map_block_0101);
+        map_block_0110 = convertToMutable(map_block_0110);
+        map_block_0111 = convertToMutable(map_block_0111);
+        map_block_1000 = convertToMutable(map_block_1000);
+        map_block_1001 = convertToMutable(map_block_1001);
+        map_block_1010 = convertToMutable(map_block_1010);
+        map_block_1011 = convertToMutable(map_block_1011);
+        map_block_1100 = convertToMutable(map_block_1100);
+        map_block_1101 = convertToMutable(map_block_1101);
+        map_block_1110 = convertToMutable(map_block_1110);
+        map_block_1111 = convertToMutable(map_block_1111);
+        map_block_0000.setHeight(blocksize);
+        map_block_0000.setWidth(blocksize);
+        map_block_0001.setHeight(blocksize);
+        map_block_0001.setWidth(blocksize);
+        map_block_0010.setHeight(blocksize);
+        map_block_0010.setWidth(blocksize);
+        map_block_0011.setHeight(blocksize);
+        map_block_0011.setWidth(blocksize);
+        map_block_0100.setHeight(blocksize);
+        map_block_0100.setWidth(blocksize);
+        map_block_0101.setHeight(blocksize);
+        map_block_0101.setWidth(blocksize);
+        map_block_0110.setHeight(blocksize);
+        map_block_0110.setWidth(blocksize);
+        map_block_0111.setHeight(blocksize);
+        map_block_0111.setWidth(blocksize);
+        map_block_1000.setHeight(blocksize);
+        map_block_1000.setWidth(blocksize);
+        map_block_1001.setHeight(blocksize);
+        map_block_1001.setWidth(blocksize);
+        map_block_1010.setHeight(blocksize);
+        map_block_1010.setWidth(blocksize);
+        map_block_1011.setHeight(blocksize);
+        map_block_1011.setWidth(blocksize);
+        map_block_1100.setHeight(blocksize);
+        map_block_1100.setWidth(blocksize);
+        map_block_1101.setHeight(blocksize);
+        map_block_1101.setWidth(blocksize);
+        map_block_1110.setHeight(blocksize);
+        map_block_1110.setWidth(blocksize);
+        map_block_1111.setHeight(blocksize);
+        map_block_1111.setWidth(blocksize);
+        block_map.put(0,map_block_0000);
+        block_map.put(1,map_block_0001);
+        block_map.put(10,map_block_0010);
+        block_map.put(11,map_block_0011);
+        block_map.put(100,map_block_0100);
+        block_map.put(101,map_block_0101);
+        block_map.put(110,map_block_0110);
+        block_map.put(111,map_block_0111);
+        block_map.put(1000,map_block_1000);
+        block_map.put(1001,map_block_1001);
+        block_map.put(1010,map_block_1010);
+        block_map.put(1011,map_block_1011);
+        block_map.put(1100,map_block_1100);
+        block_map.put(1101,map_block_1101);
+        block_map.put(1110,map_block_1110);
+        block_map.put(1111,map_block_1111);
         final TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(
                 new int[] { android.R.attr.actionBarSize });
         int mActionBarSize = (int) styledAttributes.getDimension(0, 0);
         styledAttributes.recycle();
-        canvas.drawBitmap(map_block_0000, 0, mActionBarSize, null);
+        for (int i = 0; i < 10; i++){
+            for (int j = 0; j < 10; j++){
+                x[i*10 + j] = i * blocksize;
+                y[i*10 + j] = 85 + (j * blocksize);
+            }
+        }
+        for (int i= 0; i <100; i++){
+           // canvas.drawBitmap(block_map.get(mapData.Map[i].block), x[i] , y[i], null);
+            canvas.drawBitmap(map_block_1100, x[i] , y[i], null);
+        }
+
 
 
 
@@ -219,6 +304,50 @@ public class DrawMap extends View {
 
 
     }
+    public static Bitmap convertToMutable(Bitmap imgIn) {
+        try {
+            //this is the file going to use temporally to save the bytes.
+            // This file will not be a image, it will store the raw image data.
+            File file = new File(Environment.getExternalStorageDirectory() + File.separator + "temp.tmp");
 
+            //Open an RandomAccessFile
+            //Make sure you have added uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+            //into AndroidManifest.xml file
+            RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
+
+            // get the width and height of the source bitmap.
+            int width = imgIn.getWidth();
+            int height = imgIn.getHeight();
+            Bitmap.Config type = imgIn.getConfig();
+
+            //Copy the byte to the file
+            //Assume source bitmap loaded using options.inPreferredConfig = Config.ARGB_8888;
+            FileChannel channel = randomAccessFile.getChannel();
+            MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_WRITE, 0, imgIn.getRowBytes()*height);
+            imgIn.copyPixelsToBuffer(map);
+            //recycle the source bitmap, this will be no longer used.
+            imgIn.recycle();
+            System.gc();// try to force the bytes from the imgIn to be released
+
+            //Create a new bitmap to load the bitmap again. Probably the memory will be available.
+            imgIn = Bitmap.createBitmap(width, height, type);
+            map.position(0);
+            //load it back from temporary
+            imgIn.copyPixelsFromBuffer(map);
+            //close the temporary file and channel , then delete that also
+            channel.close();
+            randomAccessFile.close();
+
+            // delete the temp file
+            file.delete();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return imgIn;
+    }
 }
 
