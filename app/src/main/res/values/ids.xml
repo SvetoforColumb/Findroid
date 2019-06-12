@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="setSpeed" type="id"></item>
+    <item name="setEnergy" type="id"></item>
+    <item name="price" type="id"></item>
+</resources>

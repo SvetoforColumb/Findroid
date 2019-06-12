@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -252,9 +253,9 @@ public class DrawMap extends View {
     }
 
 
+    String[] nameOfCities={"Moscow", "Penza","Tomsk", "Sochi", "Azov", "Amursk", "Volgograd", "Kazan", "Ufa", "Chelyabinsk"};
     class MapData extends AsyncTask<Void, Void, Boolean> {
         DrawMap drawMap;
-        String[] nameOfCities={"Moscow", "Penza","Tomsk", "Sochi", "Azov", "Amursk", "Volgograd", "Kazan", "Ufa", "Chelyabinsk"};
         class Block{
             public int x;
             int y;
@@ -285,13 +286,12 @@ public class DrawMap extends View {
         @Override
         protected Boolean doInBackground(Void... args){
             List<NameValuePair> values = new ArrayList<>();
-            values.add(new BasicNameValuePair("login", "dasc")); // TODO: передавать сюда login
+            values.add(new BasicNameValuePair("login", "dasc")); // TODO: передавать сюда login вместо dasc
             json = JSONParser.makeHttpRequest(url_getMap, "GET", values);
             try {
                 for (int i = 0; i < 100; i++) {
                     block = json.getString("block #" + i);
                     Map[i]=oneBlock(block);
-                    Log.i("mt1","x= "+Map[i].x+" y= "+Map[i].y+" city= "+Map[i].city+" block= "+Map[i].block);
 
                 }
             } catch (JSONException e) {
@@ -372,6 +372,49 @@ public class DrawMap extends View {
         }
 
         return imgIn;
+    }
+
+
+    String url_getWay="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/get_way_get.php.php";
+    String url_getPoint="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/getPoint.php.php";
+    JSONObject json = null;
+    class Way{
+        public boolean getWay(int idRobot, int idCity){
+            try {
+                List<NameValuePair> values = new ArrayList<NameValuePair>();
+                values.add(new BasicNameValuePair("robot_id", String.valueOf(idRobot)));
+                values.add(new BasicNameValuePair("city_id", String.valueOf(idCity)));
+                json = JSONParser.makeHttpRequest(url_getWay, "GET", values);
+                Thread.sleep(100);
+                int success;
+                success = json.getInt("success");
+                if (success == 1) {
+                    return true;
+                } else{
+                    return false;
+                }
+            } catch (InterruptedException e) {
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        public void getPoint(int idRobot){
+            try {
+                List<NameValuePair> values = new ArrayList<NameValuePair>();
+                values.add(new BasicNameValuePair("robot_id", String.valueOf(idRobot)));
+                json = JSONParser.makeHttpRequest(url_getPoint, "GET", values);
+                int x;
+                int y;
+                x = json.getInt("x");
+                y = json.getInt("y");
+                //TODO: можно отрисовывать прямо здесь
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }
 
