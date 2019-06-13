@@ -379,11 +379,11 @@ public class DrawMap extends View {
     String url_getPoint="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/getPoint.php.php";
     JSONObject json = null;
     class Way{
-        public boolean getWay(int idRobot, int idCity){
+        public boolean getWay(int idRobot, int idCityTo)    {
             try {
                 List<NameValuePair> values = new ArrayList<NameValuePair>();
                 values.add(new BasicNameValuePair("robot_id", String.valueOf(idRobot)));
-                values.add(new BasicNameValuePair("city_id", String.valueOf(idCity)));
+                values.add(new BasicNameValuePair("city_id", String.valueOf(idCityTo)));
                 json = JSONParser.makeHttpRequest(url_getWay, "GET", values);
                 Thread.sleep(100);
                 int success;
