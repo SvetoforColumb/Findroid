@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.AsyncTask;
@@ -77,17 +78,11 @@ public class DrawMap extends View {
         y = new int[100];
         block_map = new HashMap<Integer, Bitmap>();
         map_block_0000 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0000);
-
         map_block_0001 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0001);
-
         map_block_0010 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0010);
-
         map_block_0011 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0011);
-
         map_block_0100 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0100);
-
         map_block_0101 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0101);
-
         map_block_0110 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0110);
         map_block_0111 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0111);
         map_block_1000 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1000);
@@ -97,7 +92,6 @@ public class DrawMap extends View {
         map_block_1100 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1100);
         map_block_1101 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1101);
         map_block_1110 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1110);
-        block_map.put(1110,map_block_1110);
         map_block_1111 = BitmapFactory.decodeResource(getResources(), R.drawable.map_1111);
         map_block_0000m = convertToMutable(map_block_0000);
         map_block_0001m = convertToMutable(map_block_0001);
@@ -115,21 +109,6 @@ public class DrawMap extends View {
         map_block_1101m = convertToMutable(map_block_1101);
         map_block_1110m = convertToMutable(map_block_1110);
         map_block_1111m = convertToMutable(map_block_1111);
-        block_map.put(0,map_block_0000m);
-        block_map.put(1,map_block_0001m);
-        block_map.put(10,map_block_0010m);
-        block_map.put(11,map_block_0011m);
-        block_map.put(100,map_block_0100m);
-        block_map.put(101,map_block_0101m);
-        block_map.put(110,map_block_0110m);
-        block_map.put(111,map_block_0111m);
-        block_map.put(1000,map_block_1000m);
-        block_map.put(1001,map_block_1001m);
-        block_map.put(1010,map_block_1010m);
-        block_map.put(1011,map_block_1011m);
-        block_map.put(1100,map_block_1100m);
-        block_map.put(1101,map_block_1101m);
-        block_map.put(1111,map_block_1111m);
 
     }
 
@@ -167,86 +146,62 @@ public class DrawMap extends View {
 //        map_block_1110= map_block_1110.copy(Bitmap.Config.ARGB_8888, true);
 //        map_block_1111= map_block_1111.copy(Bitmap.Config.ARGB_8888, true);
         int blocksize = height/10;
-
-//        map_block_0000m.setHeight(blocksize);
-//        map_block_0000m.setWidth(blocksize);
-//        map_block_0001m.setHeight(blocksize);
-//        map_block_0001m.setWidth(blocksize);
-//        map_block_0010m.setHeight(blocksize);
-//        map_block_0010m.setWidth(blocksize);
-//        map_block_0011m.setHeight(blocksize);
-//        map_block_0011m.setWidth(blocksize);
-//        map_block_0100m.setHeight(blocksize);
-//        map_block_0100m.setWidth(blocksize);
-//        map_block_0101m.setHeight(blocksize);
-//        map_block_0101m.setWidth(blocksize);
-//        map_block_0110m.setHeight(blocksize);
-//        map_block_0110m.setWidth(blocksize);
-//        map_block_0111m.setHeight(blocksize);
-//        map_block_0111m.setWidth(blocksize);
-//        map_block_1000m.setHeight(blocksize);
-//        map_block_1000m.setWidth(blocksize);
-//        map_block_1001m.setHeight(blocksize);
-//        map_block_1001m.setWidth(blocksize);
-//        map_block_1010m.setHeight(blocksize);
-//        map_block_1010m.setWidth(blocksize);
-//        map_block_1011m.setHeight(blocksize);
-//        map_block_1011m.setWidth(blocksize);
-//        map_block_1100m.setHeight(blocksize);
-//        map_block_1100m.setWidth(blocksize);
-//        map_block_1101m.setHeight(blocksize);
-//        map_block_1101m.setWidth(blocksize);
-//        map_block_1110m.setHeight(blocksize);
-//        map_block_1110m.setWidth(blocksize);
-//        map_block_1111m.setHeight(blocksize);
-//        map_block_1111m.setWidth(blocksize);
-        block_map.put(0,map_block_0000);
-        block_map.put(1,map_block_0001);
-        block_map.put(10,map_block_0010);
-        block_map.put(11,map_block_0011);
-        block_map.put(100,map_block_0100);
-        block_map.put(101,map_block_0101);
-        block_map.put(110,map_block_0110);
-        block_map.put(111,map_block_0111);
-        block_map.put(1000,map_block_1000);
-        block_map.put(1001,map_block_1001);
-        block_map.put(1010,map_block_1010);
-        block_map.put(1011,map_block_1011);
-        block_map.put(1100,map_block_1100);
-        block_map.put(1101,map_block_1101);
-        block_map.put(1110,map_block_1110);
-        block_map.put(1111,map_block_1111);
+        map_block_0000m = getResizedBitmap(map_block_0000,blocksize,blocksize);
+        map_block_0001m = getResizedBitmap(map_block_0001,blocksize,blocksize);
+        map_block_0010m = getResizedBitmap(map_block_0010,blocksize,blocksize);
+        map_block_0011m = getResizedBitmap(map_block_0011,blocksize,blocksize);
+        map_block_0100m = getResizedBitmap(map_block_0100,blocksize,blocksize);
+        map_block_0101m = getResizedBitmap(map_block_0101,blocksize,blocksize);
+        map_block_0110m = getResizedBitmap(map_block_0110,blocksize,blocksize);
+        map_block_0111m = getResizedBitmap(map_block_0111,blocksize,blocksize);
+        map_block_1000m = getResizedBitmap(map_block_1000,blocksize,blocksize);
+        map_block_1001m = getResizedBitmap(map_block_1001,blocksize,blocksize);
+        map_block_1010m = getResizedBitmap(map_block_1010,blocksize,blocksize);
+        map_block_1011m = getResizedBitmap(map_block_1011,blocksize,blocksize);
+        map_block_1100m = getResizedBitmap(map_block_1100,blocksize,blocksize);
+        map_block_1101m = getResizedBitmap(map_block_1101,blocksize,blocksize);
+        map_block_1110m = getResizedBitmap(map_block_1110,blocksize,blocksize);
+        map_block_1111m = getResizedBitmap(map_block_1111,blocksize,blocksize);
+        block_map.put(0,map_block_0000m);
+        block_map.put(1,map_block_0001m);
+        block_map.put(10,map_block_0010m);
+        block_map.put(11,map_block_0011m);
+        block_map.put(100,map_block_0100m);
+        block_map.put(101,map_block_0101m);
+        block_map.put(110,map_block_0110m);
+        block_map.put(111,map_block_0111m);
+        block_map.put(1000,map_block_1000m);
+        block_map.put(1001,map_block_1001m);
+        block_map.put(1010,map_block_1010m);
+        block_map.put(1011,map_block_1011m);
+        block_map.put(1100,map_block_1100m);
+        block_map.put(1101,map_block_1101m);
+        block_map.put(1110,map_block_1110m);
+        block_map.put(1111,map_block_1111m);
         final TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(
                 new int[] { android.R.attr.actionBarSize });
         int mActionBarSize = (int) styledAttributes.getDimension(0, 0);
         styledAttributes.recycle();
         for (int i = 0; i < 10; i++){
             for (int j = 0; j < 10; j++){
-                x[i*10 + j] = i * blocksize;
+                x[i*10 + j] = i * blocksize + 1;
                 y[i*10 + j] = 85 + (j * blocksize);
             }
         }
         for (int i= 0; i <100; i++){
-           // canvas.drawBitmap(block_map.get(mapData.Map[i].block), x[i] , y[i], null);
-            canvas.drawBitmap(map_block_1100, x[i] , y[i], null);
+           canvas.drawBitmap(block_map.get(mapData.Map[i].block), x[i] , y[i], null);
+
+           }
+        for (int i= 0; i <100; i++){
+            if (mapData.Map[i].idCity != 0){
+                mPaint.setColor(Color.GREEN);
+                canvas.drawCircle(x[i] + (blocksize % 2),y[i] + (blocksize % 2) + 2,10,mPaint);
+                mPaint.setColor(Color.WHITE);
+                mPaint.setTextSize(15);
+                canvas.drawText(mapData.Map[i].city,x[i] + (blocksize % 2) + 10 ,y[i] + (blocksize % 2) + 20,mPaint);
+
+            }
         }
-
-
-
-
-
-        mPaint.setColor(Color.RED);
-        mPaint.setStrokeWidth(5);
-        canvas.drawLine(300,400,800,900, mPaint);
-        mPaint.setColor(Color.GREEN);
-        canvas.drawCircle(300,400,50,mPaint);
-        canvas.drawCircle(800,900,50,mPaint);
-        mPaint.setColor(Color.BLACK);
-        mPaint.setTextSize(30);
-        canvas.drawText(String.valueOf(mapData.Map[0].block), 400,400,mPaint);
-        canvas.drawText("Chelyabinsk", 900,900,mPaint);
-        mPaint.setTextSize(40);
-        //canvas.drawText(width + " " + height, 100, 300, mPaint);
         canvas.save();
         canvas.restore();
     }
@@ -372,6 +327,23 @@ public class DrawMap extends View {
         }
 
         return imgIn;
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 }
 
