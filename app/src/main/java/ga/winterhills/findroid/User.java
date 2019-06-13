@@ -34,6 +34,7 @@ public class User {
     private static final String url_setMoney="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/setMoney.php";
     public void setMoney(int newMoney){
         List<NameValuePair> values = new ArrayList<NameValuePair>();
+        money=newMoney;
         values.add(new BasicNameValuePair("login", login));
         values.add(new BasicNameValuePair("money", String.valueOf(money)));
         json = jsonParser.makeHttpRequest(url_getMoney, "POST", values);
