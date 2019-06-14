@@ -177,13 +177,7 @@ public class MainActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
         item.setChecked(true);
         setTitle(item.getTitle());
-        boolean loggedIn = mSettings.getBoolean(APP_PREFERENCES_LOGIN, false);
-        if (loggedIn) {
-            Intent intentObj = getIntent();
-            String email = intentObj.getStringExtra(LoginActivity.UserLoginTask.EXTRA_MASSAGE);
-            email_text = findViewById(R.id.email_nav);
-            email_text.setText(email);
-        }
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -207,6 +201,13 @@ public class MainActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
             return;
         }
+        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+
+
+            String email = mSettings.getString("email", "foskarr@gmail.com");
+            email_text = findViewById(R.id.email_nav);
+            email_text.setText(email);
+      //  }
         // Recognizer initialization is a time-consuming and it involves IO,
         // so we execute it in async task
         new MainActivity.SetupTask(this).execute();
