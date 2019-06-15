@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity
     TextView email_text;
     TextView lang_list;
 
-    DrawMap drawMap;
     View map_canvas;
     LinearLayout mainLayout;
 
@@ -85,19 +84,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //enter login activity if not login
-        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
         //boolean hasVisited = mSettings.getBoolean("hasVisited", false);
-        boolean loggedIn = mSettings.getBoolean(APP_PREFERENCES_LOGIN, false);
-        if (!loggedIn) {
-            SharedPreferences.Editor e = mSettings.edit();
-            e.putBoolean(APP_PREFERENCES_LOGIN, false);
-            //e.putBoolean("hasVisited", true);
-            e.apply();
-            Intent intentObj = new Intent(MainActivity.this, LoginActivity.class);
-            finish();
-            startActivity(intentObj);
-        }
+
 
 
     }
@@ -190,7 +179,10 @@ public class MainActivity extends AppCompatActivity
         captions.put(KWS_SEARCH, R.string.kws_caption);
         captions.put(MENU_SEARCH, R.string.menu_caption);
         captions.put(CITY_MOSCOW, R.string.city_Moscow);
-
+        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        String email = mSettings.getString("email", "");
+        email_text = findViewById(R.id.email_nav);
+        email_text.setText(email);
 //        ((TextView) findViewById(R.id.caption_text)) // todo: add to chatview
 //                .setText("Preparing the recognizer");
         VoiceChatView chatView = (VoiceChatView) findViewById(R.id.chat_view);
@@ -201,12 +193,7 @@ public class MainActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
             return;
         }
-        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
-
-            String email = mSettings.getString("email", "foskarr@gmail.com");
-            email_text = findViewById(R.id.email_nav);
-            email_text.setText(email);
       //  }
         // Recognizer initialization is a time-consuming and it involves IO,
         // so we execute it in async task

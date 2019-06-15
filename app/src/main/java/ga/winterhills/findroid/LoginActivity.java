@@ -73,10 +73,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    SharedPreferences mSettings;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        boolean loggedIn = mSettings.getBoolean(APP_PREFERENCES_LOGIN, false);
+        if (loggedIn) {
+//            SharedPreferences.Editor e = mSettings.edit();
+//            e.putBoolean(APP_PREFERENCES_LOGIN, true);
+//            //e.putBoolean("hasVisited", true);
+//            e.apply();
+            Intent intentObj = new Intent(LoginActivity.this, MainActivity.class);
+            finish();
+            startActivity(intentObj);
+        }
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email_nav);
@@ -382,7 +395,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 TextView emailTV = findViewById(R.id.email_nav);
                 String email = emailTV.getText().toString();
                 intentObj.putExtra(EXTRA_MASSAGE, email);
-                e.putString("email", "foscarr@gmail.com");
+                e.putString("email", email);
                 e.apply();
                 finish();
                 startActivity(intentObj);

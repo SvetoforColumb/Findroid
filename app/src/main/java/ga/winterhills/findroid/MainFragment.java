@@ -31,7 +31,6 @@ public class MainFragment extends Fragment {
     TextView email_text;
     TextView lang_list;
 
-    DrawMap drawMap;
     View map_canvas;
     LinearLayout mainLayout;
 
@@ -65,23 +64,20 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
-        DrawMap drawMapView = new DrawMap(getContext());
-        mainLayout = getView().findViewById(R.id.main_layout);
-        LinearLayout.LayoutParams drawMapLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, displaymetrics.widthPixels);
-        drawMapView.setLayoutParams(drawMapLayoutParams);
-        mainLayout.addView(drawMapView,0);
+
         VoiceChatView chatView = (VoiceChatView) getView().findViewById(R.id.chat_view);
         //chatView.addMessage(new ChatMessage("hello\nmessage", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
     }
 
     public interface OnViewCreatedListener {
+
         public void ViewCreated();
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
         try {
             onViewCreatedListener = (OnViewCreatedListener) activity;
         } catch (ClassCastException e) {
@@ -92,6 +88,13 @@ public class MainFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
+        DrawMap drawMapView = new DrawMap(getContext());
+        mainLayout = getView().findViewById(R.id.main_layout);
+        LinearLayout.LayoutParams drawMapLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, displaymetrics.widthPixels);
+        drawMapView.setLayoutParams(drawMapLayoutParams);
+        mainLayout.addView(drawMapView,0);
         onViewCreatedListener.ViewCreated();
+
     }
 }
