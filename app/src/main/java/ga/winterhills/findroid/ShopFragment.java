@@ -43,10 +43,11 @@ public class ShopFragment extends Fragment {
     JSONObject json = null;
     private static final String url_buy="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/buy.php";
     int speed=5;
-    int energy=15;
+    int energy=5;
     int price=0;
+    String cityTo;
 
-    @Override
+    User user;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -82,31 +83,68 @@ public class ShopFragment extends Fragment {
         buy.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                try {
-                    List<NameValuePair> values = new ArrayList<NameValuePair>();
-                    values.add(new BasicNameValuePair("login", "login")); // TODO: указать email
-                    values.add(new BasicNameValuePair("energy", String.valueOf(energy)));
-                    values.add(new BasicNameValuePair("speed", String.valueOf(speed)));
-                    values.add(new BasicNameValuePair("price", String.valueOf(price)));
-                    values.add(new BasicNameValuePair("city", city.getText().toString()));
-                    json = JSONParser.makeHttpRequest(url_buy, "GET", values);
-                    Thread.sleep(100);
-                    int success;
-                    success = json.getInt("success");
-                    if (success == 1) {
-                        TextView textView = view.findViewById(R.id.success);
-                        textView.setText("Покупка прошла успешно.");
-                    } else{
-                        TextView textView = view.findViewById(R.id.success);
-                        textView.setText("Такой город не найден. Повторите попытку");
+                Buy buy = new Buy();
+                buy.execute();
+                cityTo=city.getText().toString();
+                while(buy.success==-1) {    //TODO: исправить ебаный костыль. хз как
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                } catch (InterruptedException e) {
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                }
+                if(buy.success==1){
+                    Log.i("Tttat", "пиписька должна быть тут");
+                    TextView textView = view.findViewById(R.id.success);
+                    textView.setText("Покупка прошла успешно");
+                    user.setMoney(user.money-price);
+                } else{
+                    Log.i("Tttat", "пиписька должна быть не тут");
+                    TextView textView = view.findViewById(R.id.success);
+                    textView.setText("Такой город не найден. Повторите попытку");
                 }
             }
         });
         return view;
+    }
+
+    public class Buy extends AsyncTask<Void, Void, Void>{
+        public int success= -1;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                List<NameValuePair> values = new ArrayList<NameValuePair>();
+                values.add(new BasicNameValuePair("login", user.login));
+                values.add(new BasicNameValuePair("energy", String.valueOf(energy)));
+                values.add(new BasicNameValuePair("speed", String.valueOf(speed)));
+                values.add(new BasicNameValuePair("price", String.valueOf(price)));
+                values.add(new BasicNameValuePair("idCity", String.valueOf(getIdCity(cityTo))));
+                json = JSONParser.makeHttpRequest(url_buy, "GET", values);
+                Thread.sleep(100);
+                int sucs;
+                sucs = json.getInt("success");
+                Log.i("Tttat", ""+sucs);
+                if (sucs == 1) {
+                    success=1;
+                    Log.i("Tttat", ""+success);
+                } else{
+                    success=0;
+                }
+            } catch (InterruptedException e) {
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        private int getIdCity(String cityStr){
+            String[] nameOfCities={"Moscow", "Penza","Tomsk", "Sochi", "Azov", "Amursk", "Volgograd", "Kazan", "Ufa", "Chelyabinsk"};
+
+            for(int i=0; i<10;i++){
+                if(cityStr.equals(nameOfCities[i])) { return i;}
+            }
+            return 10;
+        }
     }
 
 }

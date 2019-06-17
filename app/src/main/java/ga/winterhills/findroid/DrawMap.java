@@ -13,7 +13,6 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -347,11 +346,15 @@ public class DrawMap extends View {
     }
 
 
-    String url_getWay="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/get_way_get.php.php";
-    String url_getPoint="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/getPoint.php.php";
+    String url_getWay="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/get_way_get.php";
+    String url_getPoint="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/getPoint.php";
     JSONObject json = null;
-    class Way{
-        public boolean getWay(int idRobot, int idCityTo)    {
+    class Way extends AsyncTask<Void, Void, Boolean> {
+        public int idRobot;
+        public int idCityTo;
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
             try {
                 List<NameValuePair> values = new ArrayList<NameValuePair>();
                 values.add(new BasicNameValuePair("robot_id", String.valueOf(idRobot)));
@@ -371,22 +374,25 @@ public class DrawMap extends View {
             }
             return false;
         }
+    }
 
-        public void getPoint(int idRobot){
+    class Point  extends AsyncTask<Void, Void, Void> {
+        public int idRobot;
+        public int x;
+        public int y;
+        @Override
+        protected Void doInBackground(Void... voids) {
             try {
                 List<NameValuePair> values = new ArrayList<NameValuePair>();
                 values.add(new BasicNameValuePair("robot_id", String.valueOf(idRobot)));
                 json = JSONParser.makeHttpRequest(url_getPoint, "GET", values);
-                int x;
-                int y;
                 x = json.getInt("x");
                 y = json.getInt("y");
-                //TODO: можно отрисовывать прямо здесь
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            return null;
         }
-
     }
 }
 
