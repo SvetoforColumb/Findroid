@@ -235,7 +235,7 @@ public class DrawMap extends View {
         }
         mPaint.setColor(Color.GREEN);
         for (int i = 0; i < user.robots.size(); i++){
-            canvas.drawCircle(block_x[robot_x[i]] + (blocksize / 2), block_y[robot_y[i]]  + (blocksize/2),20,mPaint);
+            canvas.drawCircle((robot_x[i]-625)*(width/1280) + (blocksize / 2), (robot_y[i]-625)*(height/1280)  + (blocksize/2) + 170,20,mPaint);
         }
 
         mPaint.setTextSize(100);
@@ -399,7 +399,7 @@ public class DrawMap extends View {
         protected Boolean doInBackground(Void... voids) {
             try {
                 List<NameValuePair> values = new ArrayList<NameValuePair>();
-                values.add(new BasicNameValuePair("robot_id", String.valueOf(idRobot)));
+                values.add(new BasicNameValuePair("idRobot", String.valueOf(idRobot)));
                 values.add(new BasicNameValuePair("city_id", String.valueOf(idCityTo)));
                 json = JSONParser.makeHttpRequest(url_getWay, "GET", values);
                 Thread.sleep(100);
@@ -431,7 +431,7 @@ public class DrawMap extends View {
         protected Void doInBackground(Void... voids) {
             try {
                 List<NameValuePair> values = new ArrayList<NameValuePair>();
-                values.add(new BasicNameValuePair("robot_id", String.valueOf(idRobot)));
+                values.add(new BasicNameValuePair("idRobot", String.valueOf(idRobot)));
                 json = JSONParser.makeHttpRequest(url_getPoint, "GET", values);
                 x = json.getInt("x");
                 y = json.getInt("y");
