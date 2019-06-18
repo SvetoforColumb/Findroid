@@ -235,7 +235,7 @@ public class DrawMap extends View {
         }
         mPaint.setColor(Color.GREEN);
         for (int i = 0; i < user.robots.size(); i++){
-            canvas.drawCircle(block_x[robot_x[i]] + (blocksize / 2), block_y[robot_y[i]] + 85 + (blocksize/2),20,mPaint);
+            canvas.drawCircle(block_x[robot_x[i]] + (blocksize / 2), block_y[robot_y[i]]  + (blocksize/2),20,mPaint);
         }
 
         mPaint.setTextSize(100);
@@ -424,7 +424,7 @@ public class DrawMap extends View {
         public int y;
 
         Point(int id){
-            idRobot = 1;
+            idRobot = id;
         }
 
         @Override
