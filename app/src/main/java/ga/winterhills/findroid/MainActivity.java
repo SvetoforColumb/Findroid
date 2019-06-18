@@ -12,7 +12,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,12 +26,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-import co.intentservice.chatui.ChatView;
 import co.intentservice.chatui.models.ChatMessage;
 import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
@@ -58,7 +63,12 @@ public class MainActivity extends AppCompatActivity
 
     private static final String MENU_SEARCH = "go";
     private static final String KWS_SEARCH = "wakeup";
-    private static final String CITY_MOSCOW = "moscow";
+    private static final String CITY_Moskow = "moscow";
+    private static final String CITY_Penza = "penza";
+    private static final String CITY_Sochi = "sochi";
+    private static final String CITY_Volgograd = "volgograd";
+    private static final String CITY_Kazan = "kazan";
+    private static final String CITY_Chelyabinsk = "chelyabinsk";
 
     /* Keyword we are looking for to activate menu */
     private static final String KEYPHRASE = "start";
@@ -179,7 +189,7 @@ public class MainActivity extends AppCompatActivity
         captions = new HashMap<>();
         captions.put(KWS_SEARCH, R.string.kws_caption);
         captions.put(MENU_SEARCH, R.string.menu_caption);
-        captions.put(CITY_MOSCOW, R.string.city_Moscow);
+        captions.put(CITY_Moskow, R.string.city_Moscow);
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         String email = mSettings.getString("email", "");
         email_text = findViewById(R.id.email_nav);
@@ -274,10 +284,31 @@ public class MainActivity extends AppCompatActivity
             switchSearch(MENU_SEARCH);
             chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
         }
-        else if (text.equals(CITY_MOSCOW)) {
-            switchSearch(CITY_MOSCOW);
+        else if (text.equals(CITY_Moskow)) {
+            switchSearch(MENU_SEARCH);
             chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
         }
+        else if (text.equals(CITY_Penza)) {
+            switchSearch(MENU_SEARCH);
+            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+        }
+        else if (text.equals(CITY_Sochi)) {
+            switchSearch(MENU_SEARCH);
+            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+        }
+        else if (text.equals(CITY_Kazan)) {
+            switchSearch(MENU_SEARCH);
+            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+        }
+        else if (text.equals(CITY_Volgograd)) {
+            switchSearch(MENU_SEARCH);
+            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+        }
+        else if (text.equals(CITY_Chelyabinsk)) {
+            switchSearch(MENU_SEARCH);
+            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+        }
+
         else {
             chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
         }
@@ -374,5 +405,37 @@ public class MainActivity extends AppCompatActivity
     public void onTimeout() {
         switchSearch(KWS_SEARCH);
     }
+
+    String url_getWay="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/get_way_get.php";
+
+    JSONObject json = null;
+
+    class Way extends AsyncTask<Void, Void, Boolean> {
+        public int idRobot;
+        public int idCityTo;
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            try {
+                List<NameValuePair> values = new ArrayList<NameValuePair>();
+                values.add(new BasicNameValuePair("robot_id", String.valueOf(idRobot)));
+                values.add(new BasicNameValuePair("city_id", String.valueOf(idCityTo)));
+                json = JSONParser.makeHttpRequest(url_getWay, "GET", values);
+                Thread.sleep(100);
+                int success;
+                success = json.getInt("success");
+                if (success == 1) {
+                    return true;
+                } else{
+                    return false;
+                }
+            } catch (InterruptedException e) {
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    }
+
 
 }

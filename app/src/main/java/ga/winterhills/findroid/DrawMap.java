@@ -1,6 +1,7 @@
 package ga.winterhills.findroid;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,13 +30,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static ga.winterhills.findroid.MainActivity.APP_PREFERENCES;
+
 public class DrawMap extends View {
-    boolean taskDone;
+    SharedPreferences mSettings;
+    User user;
     private Paint mPaint = new Paint();
     private Rect mRect = new Rect();
     MapData mapData;
-    int[] x;
-    int[] y;
+    int[] block_x;
+    int[] block_y;
+    int robot_x;
+    int robot_y;
+    Point point;
     HashMap<Integer, Bitmap> block_map;
     Bitmap map_block_0000;
     Bitmap map_block_0001;
@@ -72,10 +79,23 @@ public class DrawMap extends View {
 
     public DrawMap(Context context) {
         super(context);
-        mapData = new MapData();
+        mSettings = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        String email = mSettings.getString("email", "");
+        user= new User(email);
+        user.execute();
+        synchronized(this) {
+            try {
+                wait(1000);
+            } catch(InterruptedException ie){}
+        }
+        mapData = new MapData(email);
+        point = new Point(user.robots.get(0));
         mapData.execute();
-        x  = new int[100];
-        y = new int[100];
+        point.execute();
+        robot_x = point.x;
+        robot_y = point.y;
+        block_x = new int[100];
+        block_y = new int[100];
         block_map = new HashMap<Integer, Bitmap>();
         map_block_0000 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0000);
         map_block_0001 = BitmapFactory.decodeResource(getResources(), R.drawable.map_0001);
@@ -110,6 +130,8 @@ public class DrawMap extends View {
         map_block_1110m = convertToMutable(map_block_1110);
         map_block_1111m = convertToMutable(map_block_1111);
 
+
+
     }
 
     @Override
@@ -124,7 +146,7 @@ public class DrawMap extends View {
         int height = getHeight();
         // стиль Заливка
         mPaint.setStyle(Paint.Style.FILL);
-        // закрашиваем холст белым цветом
+//        // закрашиваем холст белым цветом
         mPaint.setColor(Color.WHITE);
         canvas.drawPaint(mPaint);
         mPaint.setAntiAlias(true);
@@ -184,32 +206,39 @@ public class DrawMap extends View {
         styledAttributes.recycle();
         for (int i = 0; i < 10; i++){
             for (int j = 0; j < 10; j++){
-                x[i*10 + j] = i * blocksize + 1;
-                y[i*10 + j] = 85 + (j * blocksize);
+                block_x[i] = i * blocksize + 1;
+                block_y[j] = 85 + (j * blocksize);
             }
         }
         for (int i= 0; i <100; i++){
-           canvas.drawBitmap(block_map.get(mapData.Map[i].block), x[i] , y[i], null);
+           canvas.drawBitmap(block_map.get(mapData.Map[i].block), block_x[mapData.Map[i].x] , block_y[mapData.Map[i].y], null);
 
            }
         for (int i= 0; i <100; i++){
             if (mapData.Map[i].idCity != 0){
-                mPaint.setColor(Color.GREEN);
-                canvas.drawCircle(x[i] + (blocksize % 2),y[i] + (blocksize % 2) + 2,10,mPaint);
+                mPaint.setColor(Color.BLUE);
+                canvas.drawCircle(block_x[mapData.Map[i].x] + (blocksize / 2), block_y[mapData.Map[i].y] + (blocksize / 2) + 2,10,mPaint);
                 mPaint.setColor(Color.WHITE);
-                mPaint.setTextSize(15);
-                canvas.drawText(mapData.Map[i].city,x[i] + (blocksize % 2) + 10 ,y[i] + (blocksize % 2) + 20,mPaint);
+                mPaint.setTextSize(25);
+                canvas.drawText(mapData.Map[i].city, block_x[mapData.Map[i].x] + (blocksize / 2) + 10 , block_y[mapData.Map[i].y] + (blocksize / 2) + 20,mPaint);
 
             }
         }
+        mPaint.setColor(Color.GREEN);
+        canvas.drawCircle(width*(robot_x/10) + (blocksize / 2), height*(robot_y/10) + 85 + (blocksize/2),20,mPaint);
+        mPaint.setTextSize(100);
+        //canvas.drawText(robot_x + "sss " + robot_y, 500 , 200,mPaint);
         canvas.save();
         canvas.restore();
+//
+//        invalidate();
     }
 
 
     String[] nameOfCities={"Moscow", "Penza","Tomsk", "Sochi", "Azov", "Amursk", "Volgograd", "Kazan", "Ufa", "Chelyabinsk"};
     class MapData extends AsyncTask<Void, Void, Boolean> {
         DrawMap drawMap;
+        String email;
         class Block{
             public int x;
             int y;
@@ -224,7 +253,8 @@ public class DrawMap extends View {
 
         public Block Map[];
 
-        MapData(){
+        MapData(String email){
+            this.email = email;
             //this.drawMap = drawMap;
             Map=new Block[100];
             for (int i=0; i<100; i++)
@@ -240,7 +270,7 @@ public class DrawMap extends View {
         @Override
         protected Boolean doInBackground(Void... args){
             List<NameValuePair> values = new ArrayList<>();
-            values.add(new BasicNameValuePair("login", "dasc")); // TODO: передавать сюда login вместо dasc
+            values.add(new BasicNameValuePair("login", email));
             json = JSONParser.makeHttpRequest(url_getMap, "GET", values);
             try {
                 for (int i = 0; i < 100; i++) {
@@ -380,6 +410,11 @@ public class DrawMap extends View {
         public int idRobot;
         public int x;
         public int y;
+
+        Point(int id){
+            idRobot = 1;
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             try {
@@ -395,4 +430,3 @@ public class DrawMap extends View {
         }
     }
 }
-

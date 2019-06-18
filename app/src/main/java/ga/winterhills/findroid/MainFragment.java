@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -20,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 import co.intentservice.chatui.ChatView;
 import co.intentservice.chatui.models.ChatMessage;
@@ -48,6 +50,7 @@ public class MainFragment extends Fragment {
     private HashMap<String, Integer> captions;
     SharedPreferences mSettings;
     OnViewCreatedListener onViewCreatedListener;
+    private AppBarLayout appBarLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,7 +94,9 @@ public class MainFragment extends Fragment {
         DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
         DrawMap drawMapView = new DrawMap(getContext());
         mainLayout = getView().findViewById(R.id.main_layout);
-        LinearLayout.LayoutParams drawMapLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, displaymetrics.widthPixels);
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        int pixels = (int) (56 * scale + 0.5f);
+        LinearLayout.LayoutParams drawMapLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, displaymetrics.widthPixels + pixels);
         drawMapView.setLayoutParams(drawMapLayoutParams);
         mainLayout.addView(drawMapView,0);
         onViewCreatedListener.ViewCreated();

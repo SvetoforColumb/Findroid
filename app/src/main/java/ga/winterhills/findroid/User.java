@@ -28,6 +28,10 @@ public class User extends AsyncTask<Void, Void, Boolean> {
     private static final String url_getRobots="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/getRobots.php";
     private static final String url_setMoney="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/setMoney.php";
 
+    User(String login){
+        this.login = login;
+    }
+
     protected Boolean doInBackground(Void... args){
             getMoney();
             robots = new ArrayList<Integer>();

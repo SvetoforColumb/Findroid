@@ -2,4 +2,4 @@
 
 grammar menu;
 
-public <item> = go | moskow | penza | sochi | volgograd | kazan | chelyabinsk | london | berlin;
+public <item> = go | moskow | penza | sochi | volgograd | kazan | chelyabinsk;
