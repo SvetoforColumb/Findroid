@@ -50,6 +50,13 @@ import static android.widget.Toast.makeText;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, RecognitionListener, MainFragment.OnViewCreatedListener {
 
+    public interface WayInterface {
+        public void showResult(boolean result);
+    }
+
+    User user;
+    Way way;
+
     TextView email_text;
     TextView lang_list;
 
@@ -93,6 +100,10 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        String email = mSettings.getString("email", "");
+        user = new User(email);
+        user.execute();
 
         //enter login activity if not login
 
@@ -277,38 +288,13 @@ public class MainActivity extends AppCompatActivity
         VoiceChatView chatView = (VoiceChatView) findViewById(R.id.chat_view);
         String text = hypothesis.getHypstr();
         if (text.equals(KEYPHRASE)) {
-            switchSearch(MENU_SEARCH);
             chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+            switchSearch(MENU_SEARCH);
         }
         else if (text.equals(MENU_SEARCH)){
-            switchSearch(MENU_SEARCH);
             chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
-        }
-        else if (text.equals(CITY_Moskow)) {
             switchSearch(MENU_SEARCH);
-            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
         }
-        else if (text.equals(CITY_Penza)) {
-            switchSearch(MENU_SEARCH);
-            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
-        }
-        else if (text.equals(CITY_Sochi)) {
-            switchSearch(MENU_SEARCH);
-            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
-        }
-        else if (text.equals(CITY_Kazan)) {
-            switchSearch(MENU_SEARCH);
-            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
-        }
-        else if (text.equals(CITY_Volgograd)) {
-            switchSearch(MENU_SEARCH);
-            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
-        }
-        else if (text.equals(CITY_Chelyabinsk)) {
-            switchSearch(MENU_SEARCH);
-            chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
-        }
-
         else {
             chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.SENT));
         }
@@ -325,6 +311,108 @@ public class MainActivity extends AppCompatActivity
             String text = hypothesis.getHypstr();
             makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
             VoiceChatView chatView = (VoiceChatView) findViewById(R.id.chat_view);
+            if (text.equals(CITY_Moskow)) { // id 1
+                Way task = new Way(user.robots.get(0), 1,  new WayInterface() {
+                    @Override
+                    public void showResult(boolean result) {
+                        if (result) {
+                            Toast.makeText(MainActivity.this, "Succesful",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                task.execute();
+                chatView.addMessage(new ChatMessage("go" + text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+                chatView.addMessage(new ChatMessage("Going Moskow", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
+//                switchSearch(MENU_SEARCH);
+            }
+            else if (text.equals(CITY_Penza)) { // 2
+                Way task = new Way(user.robots.get(0), 2,  new WayInterface() {
+                    @Override
+                    public void showResult(boolean result) {
+                        if (result) {
+                            Toast.makeText(MainActivity.this, "Succesful",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                task.execute();
+                chatView.addMessage(new ChatMessage("go" + text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+                chatView.addMessage(new ChatMessage("Going Penza", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
+//                switchSearch(MENU_SEARCH);
+            }
+            else if (text.equals(CITY_Sochi)) { // 4
+                Way task = new Way(user.robots.get(0), 4,  new WayInterface() {
+                    @Override
+                    public void showResult(boolean result) {
+                        if (result) {
+                            Toast.makeText(MainActivity.this, "Succesful",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                task.execute();
+                chatView.addMessage(new ChatMessage("go" + text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+                chatView.addMessage(new ChatMessage("Going Sochi", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
+//                switchSearch(MENU_SEARCH);
+            }
+            else if (text.equals(CITY_Kazan)) { // 8
+                Way task = new Way(user.robots.get(0), 8,  new WayInterface() {
+                    @Override
+                    public void showResult(boolean result) {
+                        if (result) {
+                            Toast.makeText(MainActivity.this, "Succesful",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                task.execute();
+                chatView.addMessage(new ChatMessage("go" + text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+                chatView.addMessage(new ChatMessage("Going Kazan", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
+//                switchSearch(MENU_SEARCH);
+            }
+            else if (text.equals(CITY_Volgograd)) {// 7
+                Way task = new Way(user.robots.get(0), 7,  new WayInterface() {
+                    @Override
+                    public void showResult(boolean result) {
+                        if (result) {
+                            Toast.makeText(MainActivity.this, "Succesful",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                task.execute();
+                chatView.addMessage(new ChatMessage("go" + text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+                chatView.addMessage(new ChatMessage("Going Volgograd", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
+//                switchSearch(MENU_SEARCH);
+            }
+            else if (text.equals(CITY_Chelyabinsk)) { // 10
+                Way task = new Way(user.robots.get(0), 10,  new WayInterface() {
+                    @Override
+                    public void showResult(boolean result) {
+                        if (result) {
+                            Toast.makeText(MainActivity.this, "Succesful",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+                task.execute();
+                chatView.addMessage(new ChatMessage("go" + text, System.currentTimeMillis(), ChatMessage.Type.SENT));
+                chatView.addMessage(new ChatMessage("Going Chelyabinsk", System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
+                //switchSearch(MENU_SEARCH);
+            }
             //chatView.addMessage(new ChatMessage(text, System.currentTimeMillis(), ChatMessage.Type.RECEIVED));
         }
     }
@@ -410,9 +498,20 @@ public class MainActivity extends AppCompatActivity
 
     JSONObject json = null;
 
+
+
     class Way extends AsyncTask<Void, Void, Boolean> {
         public int idRobot;
         public int idCityTo;
+        private WayInterface resultListener;
+
+        public Way(int idRobot, int idCityTo, WayInterface resultListener) {
+            this.idRobot = idRobot;
+            this.idCityTo = idCityTo;
+            this.resultListener  = resultListener;
+        }
+
+
 
         @Override
         protected Boolean doInBackground(Void... voids) {
@@ -435,6 +534,16 @@ public class MainActivity extends AppCompatActivity
             }
             return false;
         }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (resultListener != null)
+                resultListener.showResult(aBoolean);
+        }
+
+
+
     }
 
 

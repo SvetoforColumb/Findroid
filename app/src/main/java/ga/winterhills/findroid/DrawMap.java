@@ -40,8 +40,8 @@ public class DrawMap extends View {
     MapData mapData;
     int[] block_x;
     int[] block_y;
-    int robot_x;
-    int robot_y;
+    int[] robot_x;
+    int[] robot_y;
     Point point;
     HashMap<Integer, Bitmap> block_map;
     Bitmap map_block_0000;
@@ -85,15 +85,24 @@ public class DrawMap extends View {
         user.execute();
         synchronized(this) {
             try {
-                wait(1000);
+                wait(2000);
             } catch(InterruptedException ie){}
         }
         mapData = new MapData(email);
-        point = new Point(user.robots.get(0));
         mapData.execute();
-        point.execute();
-        robot_x = point.x;
-        robot_y = point.y;
+        robot_x = new int[user.robots.size()];
+        robot_y = new int[user.robots.size()];
+        for (int i = 0; i < user.robots.size() ;i++){
+            point = new Point(user.robots.get(i));
+            point.execute();
+            synchronized(this) {
+                try {
+                    wait(500);
+                } catch(InterruptedException ie){}
+            }
+            robot_x[i] = point.x;
+            robot_y[i] = point.y;
+        }
         block_x = new int[100];
         block_y = new int[100];
         block_map = new HashMap<Integer, Bitmap>();
@@ -225,7 +234,10 @@ public class DrawMap extends View {
             }
         }
         mPaint.setColor(Color.GREEN);
-        canvas.drawCircle(width*(robot_x/10) + (blocksize / 2), height*(robot_y/10) + 85 + (blocksize/2),20,mPaint);
+        for (int i = 0; i < user.robots.size(); i++){
+            canvas.drawCircle(block_x[robot_x[i]] + (blocksize / 2), block_y[robot_y[i]] + 85 + (blocksize/2),20,mPaint);
+        }
+
         mPaint.setTextSize(100);
         //canvas.drawText(robot_x + "sss " + robot_y, 500 , 200,mPaint);
         canvas.save();

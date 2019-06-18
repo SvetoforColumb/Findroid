@@ -26,7 +26,7 @@
 
     <!-- Voice captions -->
     <string name="kws_caption">To start say \"Start\".</string>
-    <string name="menu_caption">Say \"go\" to give robot the distanation</string>
+    <string name="menu_caption">Say \"go\" "somewere" to give robot the distanation</string>
     <string name="praparing_recognizer">Preparing the recognizer</string>
     <string name="title_activity_main2">Findroid</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
