@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity
         user = new User(email);
         user.execute();
         SharedPreferences.Editor e = mSettings.edit();
-        e.putString("robot", String.valueOf(user.robots.get(0)));
+        e.putString("robot", String.valueOf(1));
         e.apply();
         //enter login activity if not login
 
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
         for (int i = 0; i < user.robots.size(); i++){
-            menu.add(0,i,user.robots.get(i) ,user.robots.get(i) + " robot");
+            menu.add(0,user.robots.get(i),user.robots.get(i) ,user.robots.get(i) + " robot");
         }
 
 
@@ -157,6 +157,8 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences.Editor e = mSettings.edit();
         e.putString("robot", String.valueOf(id));
         e.apply();
+        Toast toast = Toast.makeText(this, "Robot " + id + " selected", Toast.LENGTH_SHORT);
+        toast.show();
 //        //noinspection SimplifiableIfStatement
 //        if (id == R.id.action_settings) {
 //            return true;

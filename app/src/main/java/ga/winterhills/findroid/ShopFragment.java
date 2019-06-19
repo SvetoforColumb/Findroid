@@ -1,6 +1,8 @@
 package ga.winterhills.findroid;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -24,6 +26,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ga.winterhills.findroid.MainActivity.APP_PREFERENCES;
+
 
 public class ShopFragment extends Fragment {
     View view;
@@ -38,7 +42,7 @@ public class ShopFragment extends Fragment {
     TextView priceView;
     EditText city;
     Button buy;
-
+    SharedPreferences mSettings;
 
     JSONObject json = null;
     private static final String url_buy="http://www.zaural-vodokanal.ru/php/rob/ForAndroid/buy.php";
@@ -80,10 +84,12 @@ public class ShopFragment extends Fragment {
         });
         city = view.findViewById(R.id.setCity);
         buy = view.findViewById(R.id.buy);
+        mSettings = getActivity().getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        final String login = mSettings.getString("email", "");
         buy.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Buy buy = new Buy();
+                Buy buy = new Buy(login);
                 buy.execute();
                 cityTo=city.getText().toString();
                 while(buy.success==-1) {    //TODO: исправить ебаный костыль. хз как
@@ -110,11 +116,17 @@ public class ShopFragment extends Fragment {
 
     public class Buy extends AsyncTask<Void, Void, Void>{
         public int success= -1;
+        String email;
+
+        public Buy(String email) {
+            this.email = email;
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             try {
                 List<NameValuePair> values = new ArrayList<NameValuePair>();
-                values.add(new BasicNameValuePair("login", user.login));
+                values.add(new BasicNameValuePair("login", email));
                 values.add(new BasicNameValuePair("energy", String.valueOf(energy)));
                 values.add(new BasicNameValuePair("speed", String.valueOf(speed)));
                 values.add(new BasicNameValuePair("price", String.valueOf(price)));
