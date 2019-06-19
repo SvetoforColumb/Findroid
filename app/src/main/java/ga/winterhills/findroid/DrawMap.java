@@ -209,10 +209,10 @@ public class DrawMap extends View {
         block_map.put(1101,map_block_1101m);
         block_map.put(1110,map_block_1110m);
         block_map.put(1111,map_block_1111m);
-        final TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(
-                new int[] { android.R.attr.actionBarSize });
-        int mActionBarSize = (int) styledAttributes.getDimension(0, 0);
-        styledAttributes.recycle();
+//        final TypedArray styledAttributes = getContext().getTheme().obtainStyledAttributes(
+//                new int[] { android.R.attr.actionBarSize });
+//        int mActionBarSize = (int) styledAttributes.getDimension(0, 0);
+//        styledAttributes.recycle();
         for (int i = 0; i < 10; i++){
             for (int j = 0; j < 10; j++){
                 block_x[i] = i * blocksize + 1;

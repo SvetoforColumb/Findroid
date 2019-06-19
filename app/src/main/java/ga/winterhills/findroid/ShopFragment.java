@@ -92,7 +92,7 @@ public class ShopFragment extends Fragment {
                 Buy buy = new Buy(login);
                 buy.execute();
                 cityTo=city.getText().toString();
-                while(buy.success==-1) {    //TODO: исправить ебаный костыль. хз как
+                while(buy.success==-1) {
                     try {
                         Thread.sleep(1);
                     } catch (InterruptedException e) {

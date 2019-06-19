@@ -92,13 +92,13 @@ public class MainFragment extends Fragment {
     public void onStart() {
         super.onStart();
         DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
-        DrawMap drawMapView = new DrawMap(getContext());
+        MapDrawView mapDrawView = new MapDrawView(getContext());
         mainLayout = getView().findViewById(R.id.main_layout);
         final float scale = getContext().getResources().getDisplayMetrics().density;
         int pixels = (int) (56 * scale + 0.5f);
         LinearLayout.LayoutParams drawMapLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, displaymetrics.widthPixels + pixels);
-        drawMapView.setLayoutParams(drawMapLayoutParams);
-        mainLayout.addView(drawMapView,0);
+        mapDrawView.setLayoutParams(drawMapLayoutParams);
+        mainLayout.addView(mapDrawView,0);
         onViewCreatedListener.ViewCreated();
 
     }
