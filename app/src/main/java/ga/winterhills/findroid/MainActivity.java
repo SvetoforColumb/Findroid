@@ -104,7 +104,9 @@ public class MainActivity extends AppCompatActivity
         String email = mSettings.getString("email", "");
         user = new User(email);
         user.execute();
-
+        SharedPreferences.Editor e = mSettings.edit();
+        e.putString("robot", String.valueOf(user.robots.get(0)));
+        e.apply();
         //enter login activity if not login
 
         //boolean hasVisited = mSettings.getBoolean("hasVisited", false);
@@ -137,7 +139,9 @@ public class MainActivity extends AppCompatActivity
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
-
+        for (int i = 0; i < user.robots.size(); i++){
+            menu.add(0,i,user.robots.get(i) ,user.robots.get(i) + " robot");
+        }
 
 
 
@@ -150,11 +154,13 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        SharedPreferences.Editor e = mSettings.edit();
+        e.putString("robot", String.valueOf(id));
+        e.apply();
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -310,12 +316,13 @@ public class MainActivity extends AppCompatActivity
     public void onResult(Hypothesis hypothesis) {
 //        ((TextView) findViewById(R.id.result_text)).setText("");
 
+        int robot_id = Integer.parseInt(mSettings.getString("robot", "1"));
         if (hypothesis != null) {
             String text = hypothesis.getHypstr();
             makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
             VoiceChatView chatView = (VoiceChatView) findViewById(R.id.chat_view);
             if (text.equals(CITY_Moskow)) { // id 1
-                Way task = new Way(user.robots.get(0), 1,  new WayInterface() {
+                Way task = new Way(robot_id, 1,  new WayInterface() {
                     @Override
                     public void showResult(boolean result) {
                         if (result) {
@@ -332,7 +339,7 @@ public class MainActivity extends AppCompatActivity
 //                switchSearch(MENU_SEARCH);
             }
             else if (text.equals(CITY_Penza)) { // 2
-                Way task = new Way(user.robots.get(0), 2,  new WayInterface() {
+                Way task = new Way(robot_id, 2,  new WayInterface() {
                     @Override
                     public void showResult(boolean result) {
                         if (result) {
@@ -349,7 +356,7 @@ public class MainActivity extends AppCompatActivity
 //                switchSearch(MENU_SEARCH);
             }
             else if (text.equals(CITY_Sochi)) { // 4
-                Way task = new Way(user.robots.get(0), 4,  new WayInterface() {
+                Way task = new Way(robot_id, 4,  new WayInterface() {
                     @Override
                     public void showResult(boolean result) {
                         if (result) {
@@ -366,7 +373,7 @@ public class MainActivity extends AppCompatActivity
 //                switchSearch(MENU_SEARCH);
             }
             else if (text.equals(CITY_Kazan)) { // 8
-                Way task = new Way(user.robots.get(0), 8,  new WayInterface() {
+                Way task = new Way(robot_id, 8,  new WayInterface() {
                     @Override
                     public void showResult(boolean result) {
                         if (result) {
@@ -383,7 +390,7 @@ public class MainActivity extends AppCompatActivity
 //                switchSearch(MENU_SEARCH);
             }
             else if (text.equals(CITY_Volgograd)) {// 7
-                Way task = new Way(user.robots.get(0), 7,  new WayInterface() {
+                Way task = new Way(robot_id, 7,  new WayInterface() {
                     @Override
                     public void showResult(boolean result) {
                         if (result) {
@@ -400,7 +407,7 @@ public class MainActivity extends AppCompatActivity
 //                switchSearch(MENU_SEARCH);
             }
             else if (text.equals(CITY_Chelyabinsk)) { // 10
-                Way task = new Way(user.robots.get(0), 10,  new WayInterface() {
+                Way task = new Way(robot_id, 10,  new WayInterface() {
                     @Override
                     public void showResult(boolean result) {
                         if (result) {
