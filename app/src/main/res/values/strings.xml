@@ -31,7 +31,7 @@
     <string name="title_activity_main2">Findroid</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Droid user</string>
+    <string name="nav_header_title">Money amount</string>
     <string name="nav_header_subtitle">example@example.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>

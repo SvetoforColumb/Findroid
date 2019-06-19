@@ -234,11 +234,15 @@ public class DrawMap extends View {
             }
         }
         mPaint.setColor(Color.GREEN);
+        float k = (float)(width)/(float) (1280);
         for (int i = 0; i < user.robots.size(); i++){
-            canvas.drawCircle((robot_x[i]-625)*(width/1280) + (blocksize / 2), (robot_y[i]-625)*(height/1280)  + (blocksize/2) + 170,20,mPaint);
+            int draw_coord_x = (int) ((robot_x[i])/10 );
+            int draw_coord_y = (int) ((robot_y[i]-625)/10 + 170);
+                canvas.drawCircle(draw_coord_x, draw_coord_y,20,mPaint);
+            mPaint.setTextSize(100);
+            canvas.drawText(String.valueOf(i), draw_coord_x , draw_coord_y,mPaint);
         }
 
-        mPaint.setTextSize(100);
         //canvas.drawText(robot_x + "sss " + robot_y, 500 , 200,mPaint);
         canvas.save();
         canvas.restore();

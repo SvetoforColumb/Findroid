@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity
     Way way;
 
     TextView email_text;
-    TextView lang_list;
+    TextView money_text;
 
     View map_canvas;
     LinearLayout mainLayout;
@@ -205,6 +205,9 @@ public class MainActivity extends AppCompatActivity
         String email = mSettings.getString("email", "");
         email_text = findViewById(R.id.email_nav);
         email_text.setText(email);
+        money_text = findViewById(R.id.money_nav);
+        String money = user.money + " $";
+        money_text.setText(money);
 //        ((TextView) findViewById(R.id.caption_text)) // todo: add to chatview
 //                .setText("Preparing the recognizer");
         VoiceChatView chatView = (VoiceChatView) findViewById(R.id.chat_view);
