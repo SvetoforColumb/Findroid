@@ -139,6 +139,11 @@ public class MainActivity extends AppCompatActivity
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+        synchronized(this) {
+            try {
+                wait(2000);
+            } catch(InterruptedException ie){}
+        }
         for (int i = 0; i < user.robots.size(); i++){
             menu.add(0,user.robots.get(i),user.robots.get(i) ,user.robots.get(i) + " robot");
         }
